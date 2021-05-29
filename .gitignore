@@ -8,4 +8,7 @@ __*
 
 *.bak
 
+!app/node_modules
+
 run/logs/*
+!run/logs/.gitkeep
