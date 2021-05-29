@@ -1,0 +1,12 @@
+node_modules/
+*.zip
+*.lock
+-*
+--*
+_*
+__*
+
+*.bak
+
+run/logs/*
+!run/logs/.gitkeep

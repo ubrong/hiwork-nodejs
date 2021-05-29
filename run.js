@@ -1,0 +1,138 @@
+(function(){
+	
+	// 引入koa
+	const koa = require("koa");
+	const app = new koa();
+	
+
+	// 框架基础配置
+	const base = require("./system/Base.js");
+	app.use(base);
+	
+	// 引入日志
+	const logger = require('./system/Logger.js');
+	app.use(logger);
+	
+	// 测试用中间件
+	// app.use(async (ctx, next)=>{
+	// 	console.log('xxx');
+	// 	ctx.state.logger('default').info('这是一个测试logger的中间件');
+	// });
+
+
+	// 载入koa视图中间件（必须在控制器之前, 在错误页前）
+	const view = require('./system/View.js');
+	app.use(view('./views'));//koa-views插件，在此处不需要next
+
+	// 错误页面
+	const error = require('./system/Error.js');
+	app.use(error.errPages);
+
+	// 静态资源
+	const static_ = require('./system/Static.js');
+	app.use(static_('/static/'));// URL中 /static/* 均为静态资源
+
+
+	// 载入控制器路由
+	const controller = require('./system/Controller.js');
+	app.use(controller());
+	// app.use(async (ctx, next)=>{
+	// 	controller();
+	// 	await next();
+	// });
+
+
+	// 测试用中间件
+	// app.use(async (ctx, next)=>{
+	// 	console.log( ctx.render );
+	// 	ctx.body='a456'+ctx.state.docRoot;
+	// })
+
+	 
+
+	// 启动侦听
+	app.listen(80);
+
+	console.log('app started: 127.0.0.1:80');
+
+
+
+
+		
+	
+	
+	
+})();
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* 
+
+app.use(async (ctx, next) => {
+    console.log(`0000 ${ctx.request.method} ${ctx.request.url}`); // 打印URL
+    await next(); // 调用下一个middleware
+		 console.log(`4444`);
+});
+
+app.use(async (ctx, next) => {
+    const start = new Date().getTime(); // 当前时间
+		console.log(`111`);
+    await next(); // 调用下一个middleware
+		console.log(`2222`);
+    const ms = new Date().getTime() - start; // 耗费时间
+    console.log(`3333 Time: ${ms}ms`); // 打印耗费时间
+});
+
+app.use(async (ctx, next) => {
+    await next();
+    ctx.response.type = 'text/html';
+    ctx.response.body = '<h1>Hello, koa2!</h1>';
+});
+
+
+
+
+ */
+
+
+
+
+
+
+
+
+
+// const router = require("./route.js");
+// import router from "./route.js";
+// console.log(router);
+
+/* 
+// 路由守卫
+app.use(async (rtx, next)=>{
+	
+	console.log('路由拦截');
+	
+	await next();
+});
+
+// 载入路由
+app.use(router.routes());
+
+// 启动侦听
+app.listen(5000);
+
+console.log('app started: 127.0.0.1:5000');
+
+
+
+ */
