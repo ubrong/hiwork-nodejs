@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<title>错误: 404，受访页面不存在</title>
+<meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+<style>
+*{
+	line-height: 1;
+	margin:0;
+	padding:0;
+	box-sizing:border-box;
+}
+html,body{height:100%;}
+body{
+	display: flex;
+  align-items: center;
+	justify-content: center;
+	background-image:linear-gradient(to bottom, #555, #DDD 65%, #555);
+}
+.box{
+	position:relative;
+	padding:50px;
+	width:720px;
+	min-height: 200px;
+	border: 1px solid #f1f2f4;
+	box-shadow: 3px 3px 30px #333;
+	background-color: #FFF;
+}
+
+.topborder {
+	position:absolute;
+	top:0;
+	left:0;
+	width:100%;
+	height: 7px;
+	background-image: linear-gradient(to right,rgba(180, 180, 180, 1) 50%,transparent 50%,transparent);
+	background-size: 20%;
+	background-color: #1f2023;
+}
+
+.innerbox{
+	padding-top: 1.5rem;
+	border-top:1px solid #555;	
+}
+
+footer {
+    position: fixed;
+    width: 100%;
+    bottom: 1em;
+    text-align: center;
+    font-size: 0.8em;
+    color: #999;
+}
+
+/* 错误码颜色 */
+.cxxx{color:#ffc107;}
+.c404{color:#ff0000;}
+.c403{color:#9c27b0;}
+.c500{color:#ff9800;}
+
+.title{font-weight:600; line-height:2em;}
+</style>
+
+</head>
+<body>
+<section class="box">
+	<div class="topborder"></div>
+	<h1 class="cxxx c404"><%=code || 404;%> <%=message || '出现错误,内容无法显示';%></h1>　
+	<h3 class="innerbox">这个页面太调皮了，建议您到首页看看其它内容吧！</h3>
+
+</section>
+
+<footer class="h6">
+	<div>hiwork-NodeJS 2021 powered by Chy/大航</div>
+</footer>
+
+</body>
+</html>
