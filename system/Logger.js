@@ -37,7 +37,7 @@ const config = {
 		
 		// 默认->控制台
 		default: {
-			appenders: [ 'console'], 
+			appenders: ['console'], 
 			level: 'all',
 		},
 		
@@ -49,7 +49,7 @@ const config = {
 		
 		// 错误->文件
 		error: {
-			appenders: ['error'],
+			appenders: ['console', 'error'],
 			level: 'error'
 		}
 	},

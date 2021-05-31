@@ -3,7 +3,6 @@
 	// 引入koa
 	const koa = require("koa");
 	const app = new koa();
-	
 
 	// 框架基础配置
 	const base = require("./system/Base.js");
@@ -30,7 +29,7 @@
 
 	// 静态资源
 	const static_ = require('./system/Static.js');
-	app.use(static_('/static/'));// URL中 /static/* 均为静态资源
+	app.use(static_('public'));// /public为公共资源目录
 
 
 	// 载入控制器路由
@@ -51,9 +50,9 @@
 	 
 
 	// 启动侦听
-	app.listen(80);
+	app.listen(8081);
 
-	console.log('app started: 127.0.0.1:80');
+	console.log('app started: 127.0.0.1:8081');
 
 
 
