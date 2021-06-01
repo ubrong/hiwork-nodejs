@@ -26,7 +26,7 @@ module.exports = (staticDir)=>{
 			
 		}
 		catch(e){
-			console.log('文件不存在，以路由解析');
+			// console.log('文件不存在，以路由解析');
 			await next();
 			// ctx.state.logger().error('静态资源错误: '+e);
 		}	

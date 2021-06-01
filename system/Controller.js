@@ -2,6 +2,13 @@
 const router = require('koa-router')();
 
 
+// 引入koa-body解析器(仅在post中使用)
+// const bodyParser= require('koa-bodyparser');
+// app.use(bodyParser());
+const koaBody = require('koa-body');
+// app.use(koaBody);
+
+
 /* 
   解析控制器定义，生成路由映射
 	request string: 在控制器中定义并导出的请求信息(必需包括请求方法和url，且以空格分隔)，如 "GET /product/:id"
@@ -26,7 +33,8 @@ const addRouter = (requestInfo, func)=>{
 			router.get(reqInfo[1], func);
 			
 		case 'POST':
-			router.post(reqInfo[1], func);
+			//post请求中使用koaBody 
+			router.post(reqInfo[1], koaBody({multipart:true}), func);
 			break;
 			
 		default:
