@@ -17,40 +17,46 @@ const config = {
 		},
 		
 		// 信息->文件
-		debug:{
+		debugFile:{
 			type:'dateFile',
 			filename:setLogDir('info.log'),
 			pattern: '.yyyy-MM-dd',
 		},
 		
 		// 错误->文件
-		error:{
+		errorFile:{
 			type: 'dateFile',
 			filename: setLogDir('error.log'),
 			pattern: '.yyyy-MM-dd',
-			
 		}
 	},
 	
 	// 分类以及日志等级
 	categories: {
 		
-		// 默认->控制台
+		// 默认（不推荐）->控制台
 		default: {
 			appenders: ['console'], 
 			level: 'all',
 		},
 		
-		// 信息->文件
+		// 调试需求->文件 (与开发环境区别：文件在info.log中)
 		debug: {
-			appenders: ['debug'],
-			level: 'debug',
+			appenders: ['console', 'debugFile'],
+			level: 'all',
 		},
 		
-		// 错误->文件
-		error: {
-			appenders: ['console', 'error'],
-			level: 'error'
+		
+		// 正式环境
+		product: {
+			appenders: ['errorFile'],
+			level: 'error',//只记录error以上
+		},
+		
+		// 开发环境
+		develop: {
+			appenders: ['console', 'errorFile'],
+			level: 'all'
 		}
 	},
 	
@@ -60,7 +66,17 @@ module.exports = async (ctx, next)=>{
 	
 	log4js.configure(config);//log4写入配置
 	
-	ctx.state.logger = loggerCate=>log4js.getLogger(loggerCate);
+	// 将logger写入ctx.state
+	ctx.state.logger = logType=>{
+		
+		if(!logType){
+			// console.log('当前模式： '+ctx.state.modeType);
+			logType = ctx.state.modeType=='develop' ? 'develop' : 'product';
+		}
+		
+		// 返回logger
+		return log4js.getLogger(logType);
+	}
 	
 	await next();
 }
