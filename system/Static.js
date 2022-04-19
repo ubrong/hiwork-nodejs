@@ -1,36 +1,38 @@
-const fs = require("mz/fs");//fs-promise
+const fs = require("fs/promises");//fs-promise
 const path = require('path')
 const mime = require('mime');
 
-module.exports = (staticDir)=>{
-	
-	// 定义静态目录
-	if(!staticDir) staticDir='public';
-	
+//定义静态目录
+module.exports = (staticDir='public')=>{
+
 	return async (ctx, next)=>{
-		// 请求路径path
-		let reqPath = ctx.request.path;
-		// console.log(reqPath);
+		console.log('第1个中间件：static!');
 		
-		// 当前请求文件的路径
-		// console.log(ctx.state.docRoot, staticDir, reqPath);
-		let filePath = path.join(ctx.state.docRoot, staticDir, reqPath);
-		
-		// 是文件则加载，否则由后续路由解析
+		let filePath = path.resolve(staticDir+ctx.request.path);
+
+		// 说明：静态资源在try中处理，返回后停止影响
 		try{
-			// 查找文件的mime
-			ctx.response.type = mime.getType(reqPath);//mime.getType根据后缀名判断mime类型并输出，注意文件不一定必需存在
-			
-			// 读取文件内容并赋值给response.body
-			ctx.response.body = await fs.readFile(filePath); 
-			
+			// 读取：如果出错，则由catch处理
+			let file = await fs.readFile(filePath);
+
+			//mime.getType根据后缀名判断mime类型并输出，注意文件不一定必需存在
+			ctx.response.type = mime.getType(ctx.request.path);
+
+			// 输出文件
+			ctx.response.body = file;
 		}
-		catch(e){
-			console.log('文件不存在，以路由解析');
+
+		// 说明：url不存在，则交由catch，转给框架处理。
+		catch(err){
+			// 加载框架基础数据到ctx.state
+			const state = require(path.resolve('config.js'));//环境变量
+			state.docRoot = path.resolve();//根目录，默认最后无/,
+			for(let k in state){ctx.state[k] = state[k];}
+
+			// 框架页面交给后面进行处理
 			await next();
-			// ctx.state.logger().error('静态资源错误: '+e);
-		}	
-		
+		}
+
 	}
 }
 

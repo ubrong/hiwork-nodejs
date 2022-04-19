@@ -1,66 +1,66 @@
 (function(){
-	
-	// 引入koa
+	 
+	// 1. 引入koa
 	const koa = require("koa");
 	const app = new koa();
 
-	// 框架基础配置
-	const base = require("./system/Base.js");
-	app.use(base);
+	// 说明：各中间件 均应 `await next()`，以确保下个异步中间件可以执行
+		
+	// 2. 静态资源[第一个中间件: 普通页面则next]
+	const static_ = require('./system/Static.js');
+	app.use(static_('public'));// /public为公共资源目录
+	// static_('public');// /public为公共资源目录
 	
-	// 引入日志
-	const logger = require('./system/Logger.js');
-	app.use(logger);
+
+	// 3. 框架基础配置
+	// const base = require("./system/Base.js");
+	// app.use(base);
 	
-	// 测试用中间件
-	// app.use(async (ctx, next)=>{
-	// 	console.log('xxx');
-	// 	ctx.state.logger('default').info('这是一个测试logger的中间件');
-	// });
+	// 4. 引入日志（不再引入日志）
+	// const logger = require('./system/Logger.js');
+	// app.use(logger);
 
-
-	// 载入koa视图中间件（必须在控制器之前, 在错误页前）
+	// 4. 载入koa视图中间件（必须在控制器之前, 在错误页前）
 	const view = require('./system/View.js');
-	app.use(view('./views'));//koa-views插件，在此处不需要next
+	app.use(view('views'));//koa-views插件，在此处不需要next
 
-	// 错误页面
+	// 5.错误页面（后置中间件，实际在控制器后执行）
 	const error = require('./system/Error.js');
 	app.use(error.errPages);
 
-	// 静态资源
-	const static_ = require('./system/Static.js');
-	app.use(static_('public'));// /public为公共资源目录
-
-
-	// 载入控制器路由
-	const controller = require('./system/Controller.js');
-	app.use(controller());
+	
+	// 测试用(前置)中间件
 	// app.use(async (ctx, next)=>{
-	// 	controller();
+	// 	console.log( 'ceshi middleware ouput at : ' + (new Date()) );
+	// 	// ctx.body='文档根：'+ctx.state.docRoot;
+	// 	ctx.body='middleware output';
+	// 	ctx.state.logger('default').info('这是一个测试logger的中间件');
 	// 	await next();
+	// })
+
+	// 测试用(后置)中间件
+	// app.use(async (ctx, next)=>{
+	// 	await next();
+	// 	console.log('后置中间件：'+ctx.body);
+	// })
+
+
+	// 6. 载入路由中间件（控制器路由是最后的中间件）
+	const myrouter = require('./system/Route.js');
+	app.use(myrouter.routes());
+
+	// app.get('/users/:id', function *(next) {
+	// 	var user = yield User.findOne(this.params.id);
+	// 	this.body = user;
 	// });
 
 
-	// 测试用中间件
-	// app.use(async (ctx, next)=>{
-	// 	console.log( ctx.render );
-	// 	ctx.body='a456'+ctx.state.docRoot;
-	// })
-
-	 
 
 	// 启动侦听
 	app.listen(8081);
 
 	console.log('app started: 127.0.0.1:8081');
 
-
-
-
-		
-	
-	
-	
 })();
 
 

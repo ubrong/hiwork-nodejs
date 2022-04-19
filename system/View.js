@@ -8,17 +8,16 @@ const path = require("path");
 
 
 // 导出
-module.exports = (viewDir)=>{
-	
-	if(!viewDir) viewDir='./views';
+module.exports = (viewDir='views')=>{
+	console.log('第4个中间件：view!');	
+
 	return views(
 		path.resolve(viewDir),//模版目录：根目录下的views目录
 		{
-			extension: "ejs",
+			extension: "ejs",//视图后缀名：.ejs
 			// map:{ html: "ejs" }
 		}
-	);
-	
+	);	
 }
 
 

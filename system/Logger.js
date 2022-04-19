@@ -1,14 +1,14 @@
 const log4js = require("log4js");
-
-// 日志根目录
 const path = require("path");
-// const baseDir = path.resolve('./run/logs/');
-const setLogDir = dirname => path.resolve('./run/logs/', dirname);
+const modeType = require(path.resolve('config.js')).modeType;
 
+// 1.设置 日志根目录
+const setLogDir = dirname => path.resolve('run/logs/', dirname);
 
 // log4js配置日志器
 const config = {
 
+	// 日志输出形式
 	appenders:{
 		
 		// ->控制台
@@ -16,10 +16,10 @@ const config = {
 			type:'console'
 		},
 		
-		// 信息->文件
+		// 错误->文件
 		debugFile:{
 			type:'dateFile',
-			filename:setLogDir('info.log'),
+			filename:setLogDir('errorDebug.log'),
 			pattern: '.yyyy-MM-dd',
 		},
 		
@@ -41,10 +41,10 @@ const config = {
 		},
 		
 		// 调试需求->文件 (与开发环境区别：文件在info.log中)
-		debug: {
-			appenders: ['console', 'debugFile'],
-			level: 'all',
-		},
+		// debug: {
+		// 	appenders: ['console', 'debugFile'],
+		// 	level: 'all',
+		// },
 		
 		
 		// 正式环境
@@ -53,33 +53,39 @@ const config = {
 			level: 'error',//只记录error以上
 		},
 		
-		// 开发环境
+		// 开发环境(日志文件为)
 		develop: {
-			appenders: ['console', 'errorFile'],
+			appenders: ['console', 'debugFile'],
 			level: 'all'
 		}
 	},
 	
 }
 
+
+// 以闭包导出
+log4js.configure(config);//log4写入配置
+
+module.exports = log4js.getLogger(modeType);
+//使用示例： logger.warn('警告：这里有一个错误')
+
+/* 
+//在koa中间件加入logger
 module.exports = async (ctx, next)=>{
-	
-	log4js.configure(config);//log4写入配置
+	console.log('第3个中间件：logger!');	
 	
 	// 将logger写入ctx.state
 	ctx.state.logger = logType=>{
-		
-		if(!logType){
-			// console.log('当前模式： '+ctx.state.modeType);
-			logType = ctx.state.modeType=='develop' ? 'develop' : 'product';
-		}
-		
-		// 返回logger
-		return log4js.getLogger(logType);
+		// console.log('当前模式： '+(logType || ctx.state.modeType) );
+		return log4js.getLogger(logType || ctx.state.modeType || 'default');
 	}
 	
+	// console.log('logger module used!');
 	await next();
-}
+}  
+*/
+
+
 
 /* 
 let logger = log4js.getLogger('errLogger');
