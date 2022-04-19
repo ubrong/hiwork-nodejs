@@ -58,8 +58,7 @@
 
 	// 启动侦听
 	app.listen(8081);
-
-	console.log('app started: 127.0.0.1:8081');
+	console.log('app started: 0.0.0.0:8081');
 
 })();
 

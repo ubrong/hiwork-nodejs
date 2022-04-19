@@ -1,4 +1,4 @@
-const fs = require("fs/promises");//fs-promise
+const fs = require("fs/promises");
 const path = require('path')
 const mime = require('mime');
 
@@ -6,7 +6,7 @@ const mime = require('mime');
 module.exports = (staticDir='public')=>{
 
 	return async (ctx, next)=>{
-		console.log('第1个中间件：static!');
+		// console.log('第1个中间件：static!');
 		
 		let filePath = path.resolve(staticDir+ctx.request.path);
 
@@ -35,6 +35,3 @@ module.exports = (staticDir='public')=>{
 
 	}
 }
-
-
-

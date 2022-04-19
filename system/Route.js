@@ -1,4 +1,11 @@
 // 并发读取控制器文件
+/** 
+ * 系统路由
+ * 描述：将控制器（/app/controllers/*.js）中定义的路由解析到框架
+ * 
+ * 注意：这里使用 `koa-router`单例模式，路由的加载均作用到单例中（无需再手动导入导出）
+ * 
+ */
 
 const fs = require('fs/promises');
 const path = require('path');
@@ -27,10 +34,8 @@ module.exports.router = router;
 // 导出：路由配置，供koa中间件使用
 // controllerDir为控制器目录（注意使用相对路径）
 module.exports.routes = (controllerDir='app/controllers')=>{
-	console.log('第6个中间件：ctl!');	
+	// console.log('第4个中间件：ctl!');	
 	parseCtrollerToRouter(controllerDir);
 	return router.routes();
 };
-
-
 
