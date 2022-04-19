@@ -1,5 +1,6 @@
 {
   "scripts": {
+    "update": "supervisor run.js",
     "dev": "node run.js"
   },
   "dependencies": {
