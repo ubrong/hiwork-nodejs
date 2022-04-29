@@ -7,7 +7,7 @@
 	// 说明：各中间件 均应 `await next()`，以确保下个异步中间件可以执行
 		
 	// 2. 静态资源[第一个中间件: 普通页面则next]
-	const static_ = require('./system/Static.js');
+	const static_ = require('./system/core/Static.js');
 	app.use(static_('public'));// /public为公共资源目录
 	// static_('public');// /public为公共资源目录
 	
@@ -21,11 +21,11 @@
 	// app.use(logger);
 
 	// 4. 载入koa视图中间件（必须在控制器之前, 在错误页前）
-	const view = require('./system/View.js');
+	const view = require('./system/core/View.js');
 	app.use(view('views'));//koa-views插件，在此处不需要next
 
 	// 5.错误页面（后置中间件，实际在控制器后执行）
-	const error = require('./system/Error.js');
+	const error = require('./system/core/Error.js');
 	app.use(error.errPages);
 
 	
@@ -46,7 +46,7 @@
 
 
 	// 6. 载入路由中间件（控制器路由是最后的中间件）
-	const myrouter = require('./system/Route.js');
+	const myrouter = require('./system/core/Route.js');
 	app.use(myrouter.routes());
 
 	// app.get('/users/:id', function *(next) {

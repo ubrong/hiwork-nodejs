@@ -42,10 +42,10 @@
 		<section>
 			<ul>
 				<%
-					if(typeof list=='object'){
-						for(let li of list){
+					if(typeof rows=='object'){
+						for(let obj of rows){
 				%>
-				<li><%=li.id;%> - <%=li.tit;%></li>
+				<li><%=obj.id;%> - <%=obj.name;%></li>
 				<% 
 					}
 						} 

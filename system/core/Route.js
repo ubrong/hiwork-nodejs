@@ -24,7 +24,7 @@ async function parseCtrollerToRouter(controllerDir){
 
 	//3. 将控制器中配置载入路由实例
 	for(let f of files){
-		require('../app/controllers/'+f);
+		require(path.resolve('app/controllers', f));
 	}
 }
 

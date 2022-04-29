@@ -30,7 +30,7 @@ module.exports.errPages = async (ctx, next)=>{
 		ctx.response.status = 500;
 		
 		//1. 记录日志
-		const logger = require(ctx.state.docRoot+"/system/Logger.js");
+		const logger = require(ctx.state.docRoot+"/system/core/Logger.js");
 		logger.error(
 			'[500] '+ e.stack.substr(0, e.stack.search(/\r?\n/) || 300) 
 		);
