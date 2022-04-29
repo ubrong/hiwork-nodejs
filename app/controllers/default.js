@@ -1,4 +1,5 @@
-const router = require('../../system/Route').router;
+const path = require('path');
+const router = require(path.resolve('system/core/Route')).router;
 
 
 // get
