@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>DB返回列表渲染-hiwork示例</title>
+		<style type="text/css">
+			*{
+				margin:0;
+				padding:0;
+				box-sizing: border-box;
+			}
+			
+			html{
+				background-color: #F0F0F0;
+				height: 100%;
+				overflow-y: auto;
+				
+			}
+			body{
+				background-color: #FFF;
+				max-width:680px;
+				margin:0 auto;
+				min-height: 100%;
+				padding:1rem;
+				line-height: 2;
+			}
+			
+			ul,dl,li{
+				list-style-type: none;
+			}
+			
+			section{
+				margin: 1.5rem 0;
+			}
+
+			.flex{
+				display: flex;
+				justify-content: space-between;
+			}
+
+			.left{
+				width: 40%;
+				margin-right: 1rem;
+				/* flex-basis: 270px; */
+			}
+
+			.left img{
+				display: block;
+				width:250px;
+				height:300px;
+				background-color: #ddd;
+			}
+
+			.right{
+				/* width: 50%; */
+				flex:1;
+				display: flex;
+				flex-direction: column;
+				justify-content: space-around;
+			}
+
+
+			.good-detail{
+				margin:1rem 0;
+				/* border-top:1px solid #000; */
+				padding:1rem 0;
+			}
+			.goods-title{
+				font-weight: 600;
+			}
+
+			.goods-price{
+				color: red;
+				font-weight: 700;
+				font-size: 1.5rem;
+			}
+
+			.goods-form{
+				text-decoration: line-through;
+			}
+
+			.goods-save{
+				color: red;
+			}
+
+			.goods-quan{
+				/* border:1px solid #ddd; */
+				padding:.1rem .5rem;
+				border-radius:3px;
+				background-color: #9E9E9E;
+				color:#FFF;
+			}
+
+		</style>
+	</head>
+	<body>
+		<h1>DB返回列表渲染渲染-hiwork示例</h1>
+		<h5><a href="<%=uri;%>">返回商品列表</a></h5>
+		<hr />	
+		<section class="good-brief flex">
+			<div class="left">
+				<img src="" alt="图片请自行替换">
+			</div>
+			<dl class="right">
+				<dt class="goods-title"><%=rowObj.title;%></dt>
+				<dd>来源: <%=rowObj.plat;%></dd>
+				<dd>类别:<%=rowObj.cate;%></dd>
+				<dd>
+					价格：¥
+					<b class="goods-price"><%=rowObj.price-rowObj.save;%></b>
+					<span class="goods-form"><%=rowObj.price;%></span>  
+					<span class="goods-quan" title="<%=rowObj.save;%>">券:¥<%=rowObj.save;%></span>
+				</dd>
+				<dd>
+					<button>立即购买</button>
+					<button>加入收藏</button>
+				</dd>
+			</dl>
+		</section>
+		
+		<section class="good-detail">
+			商品详情
+			<hr>
+		</section>
+	</body>
+</html>

@@ -17,11 +17,11 @@ const config = {
 		},
 		
 		// 错误->文件
-		debugFile:{
-			type:'dateFile',
-			filename:setLogDir('errorDebug.log'),
-			pattern: '.yyyy-MM-dd',
-		},
+		// debugFile:{
+		// 	type:'dateFile',
+		// 	filename:setLogDir('errorDebug.log'),
+		// 	pattern: '.yyyy-MM-dd',
+		// },
 		
 		// 错误->文件
 		errorFile:{
@@ -40,9 +40,9 @@ const config = {
 			level: 'all',
 		},
 		
-		// 调试需求->文件 (与开发环境区别：文件在info.log中)
-		// debug: {
-		// 	appenders: ['console', 'debugFile'],
+		// 调试需求->文件 (与环境区别：文件在info.log中)
+		// info: {
+		// 	appenders: ['console', 'info'],
 		// 	level: 'all',
 		// },
 		
@@ -55,7 +55,7 @@ const config = {
 		
 		// 开发环境(日志文件为)
 		develop: {
-			appenders: ['console', 'debugFile'],
+			appenders: ['console', 'errorFile'],
 			level: 'all'
 		}
 	},
@@ -67,7 +67,7 @@ const config = {
 log4js.configure(config);//log4写入配置
 
 module.exports = log4js.getLogger(modeType);
-//使用示例： logger.warn('警告：这里有一个错误')
+
 
 /* 
 //在koa中间件加入logger

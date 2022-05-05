@@ -29,6 +29,12 @@
 	app.use(error.errPages);
 
 	
+	// 6. json格式页面（在路由中间件前执行）
+	const rtn = require('./system/core/Rtn.js');
+	app.use(rtn());
+
+
+	
 	// 测试用(前置)中间件
 	// app.use(async (ctx, next)=>{
 	// 	console.log( 'ceshi middleware ouput at : ' + (new Date()) );
@@ -45,7 +51,7 @@
 	// })
 
 
-	// 6. 载入路由中间件（控制器路由是最后的中间件）
+	// 7. 载入路由中间件（控制器路由是最后的中间件）
 	const myrouter = require('./system/core/Route.js');
 	app.use(myrouter.routes());
 
@@ -57,8 +63,9 @@
 
 
 	// 启动侦听
-	app.listen(8081);
-	console.log('app started: 0.0.0.0:8081');
+	const port=81;
+	app.listen(port);
+	console.log(`app started: 0.0.0.0:${port}`);
 
 })();
 

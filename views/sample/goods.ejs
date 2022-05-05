@@ -41,15 +41,18 @@
 		
 		<section>
 			<ul>
-				<%
-					if(typeof rows=='object'){
-						for(let obj of rows){
-				%>
-				<li><%=obj.id;%> - <%=obj.name;%></li>
-				<% 
-					}
-						} 
-				%>
+				<% if(typeof rows == 'object'){ %>
+					<% for(let obj of rows){ %>
+						<li>
+							<%=obj.id;%>
+							-
+							<a href="/goods/<%=obj.id;%>?uri=<%=uri;%>"><%=obj.title.slice(0, 20);%>...</a>
+						</li>
+							
+					<% } %>
+				<% }else{  %>
+					<b style="color: red;">没有取到数据！</b>
+				<% } %>
 			</ul>
 		</section>
 		

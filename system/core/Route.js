@@ -15,6 +15,7 @@ let router = require('koa-router')();
 async function parseCtrollerToRouter(controllerDir){
 	//1. 取得控制器目录
 	controllerDir = path.resolve(controllerDir);
+	// console.log(controllerDir);
 
 	//2. 读取控制器目录下的所有控制器文件
 	let files = await fs.readdir(controllerDir);
@@ -24,7 +25,7 @@ async function parseCtrollerToRouter(controllerDir){
 
 	//3. 将控制器中配置载入路由实例
 	for(let f of files){
-		require(path.resolve('app/controllers', f));
+		require(controllerDir+'/'+f);
 	}
 }
 
@@ -33,7 +34,7 @@ module.exports.router = router;
 
 // 导出：路由配置，供koa中间件使用
 // controllerDir为控制器目录（注意使用相对路径）
-module.exports.routes = (controllerDir='app/controllers')=>{
+module.exports.routes = (controllerDir='app/routes')=>{
 	// console.log('第4个中间件：ctl!');	
 	parseCtrollerToRouter(controllerDir);
 	return router.routes();

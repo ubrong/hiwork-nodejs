@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%=title;%></title>
+  <style>
+    *{
+      margin: 0;
+      padding:0;
+    }
+    html, body{
+      position: relative;
+      width:960px;
+      height: 100%;
+      margin:0 auto;
+      font-size: 16px;
+    }
+
+    a{
+      cursor:pointer;
+      color:blue;
+    }
+
+    a:hover{
+      text-decoration: underline;
+    }
+
+    .main{
+      min-height: 200px;
+    }
+
+    .newslist{
+      list-style-type: decimal;
+      list-style-position: inside;
+
+    }
+
+    .newslist li{
+      margin:.5rem 0;
+      padding:1rem;
+      background-color: #eee;
+    }
+
+    .newsctime{
+      float:right;
+    }
+  </style>
+  <script src="https://unpkg.com/vue@next"></script>
+</head>
+<body>
+  <%- include('_header', {nick}); %>
+
+  <section class="main">
+    <h3>新闻列表(循环)：</h3>
+    <ul class="newslist">
+      <% rows.forEach(function(row){ %>
+        <li>
+          <%=row.title;%>
+          <span class="newsctime"><%=row.time;%></span>
+        </li>
+      <% }); %>
+    </ul>
+  </section>
+
+  <%- include('_footer'); %>
+
+</body>
+</html>

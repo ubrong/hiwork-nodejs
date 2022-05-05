@@ -1,39 +1,37 @@
 const mysql  = require('mysql');  
 const path  = require('path');  
 
+// 一、 连接池
+// 1.1 载入配置数据
+let dbConfig  = require( path.resolve('./app/db.config.js') ); 
+// console.log(dbConfig);
 
-// 连接
-const connect = ()=>{
-	
-	// 数据库配置
-	let dbConfig  = require( path.resolve('./app/db.js') );  
-	
-	// 创建连接池
-	const pool  = mysql.createPool(dbConfig);
-	
-	// 返回promise接连结果
-	return new Promise((res, rej)=>{
-		pool.getConnection((err, conn)=>{
-			err ? rej(err) : res(conn);
-		})
-	});
-}
+// 1.2 创建连接池
+const pool  = mysql.createPool(dbConfig);
 
-// 执行
-const query = async (sql, params)=>{
-	
-	// 连接
-	let db = await connect();
-	
-	return new Promise((res,rej)=>{
-		
-		// 执行
-		db.query(sql, params, (e,r,fields)=>{
-			e ? rej(e) : res(r);
+
+// 二、sql执行语句
+const query = (sql, params)=>{
+	// 返回promise
+	return new Promise((resolve,reject)=>{
+
+		// 取回连接
+		pool.getConnection( (err, conn) => {
+			// 连接错误
+ 			if (err) return reject(err);
+
+			// 执行语句
+			conn.query(sql, params, (err, rows, fields) => {
+
+		    conn.release();//执行后立即释放连接
+
+		    if (err) return reject(err);
+
+		    return resolve(rows);
+		  });
+
 		});
-		
-		// 释放连接
-		db.release();
+
 	});
 }
 
@@ -41,13 +39,13 @@ const query = async (sql, params)=>{
 /* 
  * 读取
  * fetchType int 2:二维数组， 1:一维数组
+ * 说明：select语句返回的是 [] 或 [RowDataPacket{...}]
  */
 const select = async (sql, params, fetchType=2)=>{
 	let r = await query(sql, params);
-	// console.log(r);
 	
 	if(!r) return []; 
-	return fetchType===1 ? r[0] : r ;
+	return fetchType===1 ? r[0] : r;
 }
 
 
@@ -61,7 +59,12 @@ const select = async (sql, params, fetchType=2)=>{
  */
 const execute = async (sql, params)=>{
 	let r = await query(sql, params);
-	return {matched:r.affectedRows, changed:r.changedRows , warning:r.warningCount};
+
+	return {
+		matched: r.affectedRows, 
+		changed: r.changedRows, 
+		warning: r.warningCount
+	};
 }
 
 
