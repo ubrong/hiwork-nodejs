@@ -62,24 +62,38 @@ module.exports.errPages = async (ctx, next)=>{
 		
 		//1. 记录日志
 		const logger = require("./Logger.js")();
-		logger.error(getLogErrorTxt(e));
+		let errText = getLogErrorTxt(e);
+		logger.error(errText);
 		// console.log(e, e.stack);//如上面日志记录有误，请通过此行查看
 		
 		//2. 显示错误页面
-		if(ctx.state.modeType=='product'){
-			await ctx.render('hiwork/epage-product', {
-				code:ctx.response.status, 
-				message: "系统报错",
-				advice: "请联系管理员解决",
-			});
+		if(ctx.accepts('json', 'text') == 'json'){
+			if(ctx.state.modeType=='product'){
+				ctx.state.body.fail('系统报错, 请联系管理员解决');
+			}
+			else{
+				ctx.state.body.fail(errText);
+			}
 		}
 		else{
-			e.emsg = e.stack;//加错误栈
-			await ctx.render('hiwork/epage-develop', {
-				status:ctx.response.status, 
-				error:e
-			});
+			if(ctx.state.modeType=='product'){
+				await ctx.render('hiwork/epage-product', {
+					code:ctx.response.status, 
+					message: "系统报错",
+					advice: "请联系管理员解决",
+				});
+			}
+			else{
+				e.emsg = e.stack;//加错误栈
+				await ctx.render('hiwork/epage-develop', {
+					status:ctx.response.status, 
+					error:e
+				});
+			}
 		}
+
+
+	
 		
 	}
 	

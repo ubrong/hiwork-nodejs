@@ -26,5 +26,5 @@ module.exports={
 	 */
 
 
-	modeType: 'develop',//develop product nolog
+	modeType: 'nolog',//develop product nolog
 }

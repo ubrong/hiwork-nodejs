@@ -84,3 +84,48 @@ router.get(/^\/goods\/(\d{2,5})(\.html)?$/, async (ctx, next) => {
 });
 
 
+
+//1. 
+router.get('/form', async (ctx, next) => {
+	await ctx.render('sample/form');
+});
+
+// 增加
+router.post('/form/add', async (ctx, next) => {
+
+	// 取得post数据
+	let {email, phone, password} = ctx.request.body;
+
+
+	// 写入数据库
+	const db=require(path.resolve("system/library/Db.js"));
+	let r = await db.execute('insert chy.t_cs_user (email, phone, password) values(?,?,?);', [email, phone, password]);
+
+	// console.log(r);
+	ctx.state.logger('console').info('数据库处理结果：', r);
+	
+
+	// 返回结果
+	// ctx.body = 'yes';
+	r.matched>0 
+		? ctx.state.body.success(r)
+		: ctx.state.body.fail('添加失败');
+	
+});
+
+// 读取
+router.get('/form/list', async (ctx, next) => {
+
+	// 写入数据库
+	const db=require(path.resolve("system/library/Db.js"));
+	let r = await db.select('select * from chy.t_cs_user order by id desc limit ?;', [10]);
+
+	ctx.state.body.success(r);
+
+});
+
+
+
+
+
+

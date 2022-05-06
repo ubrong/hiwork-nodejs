@@ -4,13 +4,15 @@
  * 
  * 规划：
 		--------------------------------------------------------
-		用途				 		日志类别						输出器
+		模式				 				日志分类						输出器
 		--------------------------------------------------------
-		调试(任意)			default::any			debugFile[all]+console[all]
-		不要多余				nolog							console[off]
-		正式环境				product						productFile[all]
-		开发环境				develop						developFile[all]+console[all]
+		开发环境(默认)			default						developFile[all]+console[all]
+		不要多余						nolog							均不输出
+		console						 console					 console[all]
+		正式环境						product						productFile[all]
+		【删除】开发环境						develop						developFile[all]+console[all]
 		--------------------------------------------------------
+		注意：默认 为 开发环境，所有不存在的类别均使用开发环境。
  * 
  */
 
@@ -30,13 +32,6 @@ const config = {
 		// ->控制台
 		console:{
 			type:'console'
-		},
-		
-		// -> 文件 debug
-		debugFile:{
-			type: 'dateFile',
-			filename: setLogDir('debug.log'),
-			pattern: '.yyyy-MM-dd',
 		},
 
 		// -> 文件 develop
@@ -61,7 +56,7 @@ const config = {
 		
 		// 默认：console+file(当调用的分类不存在时将被调用)
 		default: {
-			appenders: ['console', 'debugFile'], 
+			appenders: ['console', 'developFile'], 
 			level: 'ALL',
 		},
 
@@ -69,6 +64,11 @@ const config = {
 		nolog:{
 			appenders: ['console'], 
 			level: 'OFF',
+		},
+
+		console:{
+			appenders: ['console'], 
+			level: 'all',
 		},
 		
 		// file
@@ -78,10 +78,10 @@ const config = {
 		},
 		
 		// console+file
-		develop: {
-			appenders: ['console', 'developFile'],
-			level: 'all'
-		}
+		// develop: {
+		// 	appenders: ['console', 'developFile'],
+		// 	level: 'all'
+		// }
 	},
 	
 }
@@ -91,28 +91,10 @@ const config = {
 log4js.configure(config);//log4写入配置
 
 // module.exports = log4js.getLogger(modeType);
-module.exports = (category=modeType)=>{
-	return log4js.getLogger(category);
+module.exports = (category)=>{
+	console.log('logger 被引入');
+	return log4js.getLogger(category || modeType);
 }
-
-
-/* 
-//在koa中间件加入logger
-module.exports = async (ctx, next)=>{
-	console.log('第3个中间件：logger!');	
-	
-	// 将logger写入ctx.state
-	ctx.state.logger = logType=>{
-		// console.log('当前模式： '+(logType || ctx.state.modeType) );
-		return log4js.getLogger(logType || ctx.state.modeType || 'default');
-	}
-	
-	// console.log('logger module used!');
-	await next();
-}  
-*/
-
-
 
 /* 
 let logger = log4js.getLogger('errLogger');

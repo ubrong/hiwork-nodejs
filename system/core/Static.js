@@ -17,6 +17,9 @@ const pushInState = (_ctx)=>{
 
 	// 加入读取 library 的函数
 	// _ctx.state.loadlib = libNameExt => require( path.resolve('system/library/'+libNameExt) );
+
+	// 注意：logger返回是一个函数体，不要返回函数的执行结果（否则会造成多次创建实例）
+	_ctx.state.logger = require( path.resolve('system/core/Logger.js') );
 }
 
 //定义静态目录

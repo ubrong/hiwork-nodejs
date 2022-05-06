@@ -25,6 +25,13 @@ const jsonHeader = (ctx)=>{
   ctx.set('Content-Type', 'application/json');
   ctx.set('Access-Control-Allow-Origin', '*');
   ctx.set("Access-Control-Allow-Methods", 'GET,POST,PUT,DELETE');
+
+  // 如有输出则不再输出
+  if(!!ctx.body){
+    console.log('已有输出，不能再次输出！！！');//后期转为logger记录
+    return;
+  }
+  
 }
 
 

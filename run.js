@@ -34,6 +34,11 @@
 	app.use(rtn());
 
 
+	// 7. 加载koa-body支持对post的解析
+	const koaBody = require('koa-body');
+	app.use(koaBody());
+
+
 	
 	// 测试用(前置)中间件
 	// app.use(async (ctx, next)=>{
