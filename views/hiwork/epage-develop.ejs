@@ -22,7 +22,7 @@ body{
 	position:relative;
 	padding:50px;
 	width:720px;
-	min-height: 200px;
+	/* min-height: 200px; */
 	border: 1px solid #f1f2f4;
 	box-shadow: 3px 3px 30px #333;
 	background-color: #FFF;
@@ -89,10 +89,10 @@ ul{
 <body>
 <section class="box">
 	<div class="topborder"></div>
-	<h3 class="title c404">[<%=status;%>] 错误：请即时纠正</h3>
+	<h3 class="title c404">[<%= locals.status || 500 %>] 错误：请即时纠正</h3>
 
 	<table>
-		<% for(let k in error){ %>
+		<% for(let k in (locals.error || {})){ %>
 			<tr>
 				<td class="key"><%=k%></td>
 				<td class="str">

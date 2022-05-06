@@ -67,10 +67,10 @@ footer {
 <section class="box">
 	<div class="topborder"></div>
 	<h1 class="cxxx c404">
-		<%=code || 404;%> - <%=message || '出现错误,内容无法显示';%>
+		<%= locals.code || 404;%> - <%= locals.message || '出现错误,内容无法显示'; %>
 	</h1>　
 	<h3 class="innerbox">
-		<%= advice || '这个页面太调皮了，建议您到首页看看其它内容吧！' %> 
+		<%= locals.advice || '这个页面太调皮了，建议您到首页看看其它内容吧！' %> 
 	</h3>
 
 </section>

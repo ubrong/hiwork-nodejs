@@ -9,10 +9,9 @@
     "delay": "1500"
   },
   "scripts": {
-    "update": "supervisor run.js",
-    "dev0": "node run.js",
-    "dev": "nodemon --inspect ./run.js"
-
+    "start": "node run.js",
+    "dev": "nodemon --inspect ./run.js",
+    "dev0": "supervisor ./run.js"
   },
   "dependencies": {
     "ejs": "^3.1.6",

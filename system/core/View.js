@@ -8,14 +8,20 @@ const path = require("path");
 
 // 导出
 module.exports = (viewDir='views')=>{
+	
 	// console.log('第3个中间件：view!');	
 
 	return koaViews(
-		path.resolve(viewDir),//模版目录：根目录下的views目录
+
+		//模版目录：根目录下的views目录
+		path.resolve(viewDir),
+
+		// 配置项
 		{
 			extension: "ejs",//视图后缀名：.ejs
 			// map:{ html: "ejs" }
 		}
+
 	);	
 }
 

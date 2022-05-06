@@ -1,3 +1,19 @@
+/* 
+ * 核心日志库
+ * 20220506142503 chy
+ * 
+ * 规划：
+		--------------------------------------------------------
+		用途				 		日志类别						输出器
+		--------------------------------------------------------
+		调试(任意)			default::any			debugFile[all]+console[all]
+		不要多余				nolog							console[off]
+		正式环境				product						productFile[all]
+		开发环境				develop						developFile[all]+console[all]
+		--------------------------------------------------------
+ * 
+ */
+
 const log4js = require("log4js");
 const path = require("path");
 const modeType = require(path.resolve('config.js')).modeType;
@@ -16,46 +32,54 @@ const config = {
 			type:'console'
 		},
 		
-		// 错误->文件
-		// debugFile:{
-		// 	type:'dateFile',
-		// 	filename:setLogDir('errorDebug.log'),
-		// 	pattern: '.yyyy-MM-dd',
-		// },
-		
-		// 错误->文件
-		errorFile:{
+		// -> 文件 debug
+		debugFile:{
 			type: 'dateFile',
-			filename: setLogDir('error.log'),
+			filename: setLogDir('debug.log'),
+			pattern: '.yyyy-MM-dd',
+		},
+
+		// -> 文件 develop
+		developFile:{
+			type: 'dateFile',
+			filename: setLogDir('develop.log'),
+			pattern: '.yyyy-MM-dd',
+		},
+
+		// -> 文件 product
+		productFile:{
+			type: 'dateFile',
+			filename: setLogDir('product.log'),
 			pattern: '.yyyy-MM-dd',
 		}
+
+
 	},
 	
-	// 分类以及日志等级
+	// 日志分类
 	categories: {
 		
-		// 默认（不推荐）->控制台
+		// 默认：console+file(当调用的分类不存在时将被调用)
 		default: {
+			appenders: ['console', 'debugFile'], 
+			level: 'ALL',
+		},
+
+		// 无任何输出
+		nolog:{
 			appenders: ['console'], 
-			level: 'all',
+			level: 'OFF',
 		},
 		
-		// 调试需求->文件 (与环境区别：文件在info.log中)
-		// info: {
-		// 	appenders: ['console', 'info'],
-		// 	level: 'all',
-		// },
-		
-		
-		// 正式环境
+		// file
 		product: {
-			appenders: ['errorFile'],
-			level: 'error',//只记录error以上
+			appenders: ['productFile'],
+			level: 'all',//只记录error以上
 		},
 		
-		// 开发环境(日志文件为)
+		// console+file
 		develop: {
-			appenders: ['console', 'errorFile'],
+			appenders: ['console', 'developFile'],
 			level: 'all'
 		}
 	},
@@ -66,7 +90,10 @@ const config = {
 // 以闭包导出
 log4js.configure(config);//log4写入配置
 
-module.exports = log4js.getLogger(modeType);
+// module.exports = log4js.getLogger(modeType);
+module.exports = (category=modeType)=>{
+	return log4js.getLogger(category);
+}
 
 
 /* 
