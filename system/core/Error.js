@@ -37,14 +37,17 @@ module.exports.errPages = async (ctx, next)=>{
 		  关于koa的返回：
 			koa默认返回404（无status，无body）
 			有body，无status，则状态码为200
-			无body，有status，则body为OK			
+			无body，有status，则body为OK		
+			警告：下面对404的判断，不代表最终返回404，如有内容则变为200，所以有内容输出时必需指定为404	
 		*/
 		else if(ctx.response.status==404) {
+			
 			// 无错误：仅是未匹配到路由时为404
 			if(isJsonRequest){
-				ctx.RTN.fail("受访页面不存在999", [], 404);//此必需指定404
+				ctx.RTN.fail("受访页面不存在999", [], 404);//
 			}
 			else{
+				ctx.status = 404;
 				await ctx.render('hiwork/epage-product', {
 					code:404, 
 					message: "受访页面不存在"
