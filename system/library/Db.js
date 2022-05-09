@@ -1,4 +1,5 @@
 const mysql  = require('mysql');  
+const { join } = require('path');
 const path  = require('path');  
 
 // 一、 连接池
@@ -8,6 +9,17 @@ let dbConfig  = require( path.resolve('./app/db.config.js') );
 
 // 1.2 创建连接池
 const pool  = mysql.createPool(dbConfig);
+
+
+let emsg='ok';
+function getErr(){
+	return emsg;
+}
+
+function setErr(_emsg){
+	emsg=_emsg;
+	return false;
+}
 
 
 // 二、sql执行语句
@@ -61,11 +73,187 @@ const execute = async (sql, params)=>{
 	let r = await query(sql, params);
 
 	return {
-		matched: r.affectedRows, 
+		// matched: r.affectedRows, 
+		affected: r.affectedRows, 
 		changed: r.changedRows, 
-		warning: r.warningCount
+		warning: r.warningCount,
+		insertId: r.insertId
 	};
 }
+
+
+// 拼接为占位语句
+const setBindsite=(obj, separtor=" and ")=>{
+	let r = [];
+	for(let v of obj){
+		r.push(v+'=?');
+	}
+
+	return  r.join(separtor);
+}
+
+/* 
+	更新 20220508143101
+
+	示例：
+	await db.update('abc', {id:15, age:32, nick:'小张'}, ['id']);
+	await db.update('abc', {id:15, age:32, nick:'小张'}, ['id', 'age']);
+	await db.update('abc', {id:15, age:32, nick:'小张'}, {y:2022, m:11}); 
+	await db.update('abc', {id:15, age:32, nick:'小张'}, 'id=5 or stat>1');
+*/
+const update = (tableName, rowObj, where)=>{
+
+	if(!where){
+		return setErr('条件不能为空！');
+	}
+
+	let fields = Object.keys(rowObj);//set的内容用于生成占位
+	let dataRow = Object.values(rowObj);//要绑定的数据
+
+	switch(where.constructor.name){
+		case 'String':
+			// 字符类型，不需要处理
+		break;
+
+		case 'Object':
+			// 加入数据中
+			dataRow = dataRow.concat( Object.values(where) );
+			// 生成占位条件
+			where = setBindsite(Object.keys(where), ' and ');
+		break;
+
+		case 'Array':{
+			let _whereArr=[];
+			for(let k of where){
+				if(!rowObj[k]){
+					return setErr('条件中没有对应索引的值');
+				}
+
+				// 生成条件数组，并加入值
+				_whereArr.push(k+'=?');
+				dataRow.push(rowObj[k]);
+			}
+
+			// 生成占位条件
+			where = _whereArr.join(" and ");
+		}
+		break;
+
+		default:
+			return setErr('条件参数类型错误！');		
+	}
+
+	//生成sql语句
+	$sql =  'update '+tableName+' set '+ setBindsite(fields, ', ') + ' where '+where;
+	// console.log($sql, dataRow);//return $sql;
+	return execute($sql, dataRow);
+}
+
+
+
+/* 
+	删除 20220508143101
+
+  示例
+	await db.del('xxx', 'id=5');	
+	await db.del('xxx', {id:5, stat:1});
+*/
+const del = (tableName, where)=>{
+
+	if(!where) return setErr('条件不能为空！');
+	
+	let dataRow = [];//要绑定的行数据
+
+	switch(where.constructor.name){
+		case 'String':
+			// 字符类型，不需要处理
+		break;
+
+		case 'Object':
+			dataRow = Object.values(where);//要绑定的数据
+			where = setBindsite(Object.keys(where), ' and ');//set的内容用于生成占位
+		break;
+	}
+
+	//生成sql语句
+	$sql = 'DELETE FROM '+tableName+' WHERE '+where;
+	// console.log($sql, dataRow);
+	// return $sql;
+	return execute($sql, dataRow);
+}
+
+
+
+/* 
+	创建 20220508143101
+
+  示例
+	await db.insert ('xxx', {id:5, stat:1});
+*/
+const insert = (tableName, rowObj)=>{
+
+	let fields = Object.keys(rowObj);//插值字段
+	let valSites = new Array(fields.length).fill('?');//值占位
+	let dataRow = Object.values(rowObj);//值数据
+
+	//生成sql语句
+	$sql =  `INSERT INTO ${tableName} (${fields.join(',')}) VALUES (${valSites.join(', ')});`;
+	// console.log($sql, dataRow);
+	// return $sql;
+	return execute($sql, dataRow);
+}
+
+
+/* 
+class Table{
+
+	#table;//表名
+	#where={};//条件
+	// #limit
+
+	#data={};//数据
+
+	constructor(table){
+		this.#table = table;
+	}
+
+	where(str, data){
+		// this.#where = ''
+	}
+
+
+	// arr为一维对象
+	update(table, obj, where){
+
+	}
+
+	update(table, obj, where){
+		
+	}
+}
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 //事务 
@@ -166,10 +354,14 @@ const transactionAwait = async (sqlArr)=>{
 
 
 module.exports={
-	query,
-	transaction,
+	// query,
+	// transaction,
 	select,
 	execute,
+	update,
+	del,
+	insert,
+	getErr,
 	// transactionAwait,
 	// execute,
 }

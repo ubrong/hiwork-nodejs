@@ -8,13 +8,30 @@
 
 // 错误页：中间件
 module.exports.errPages = async (ctx, next)=>{
-	// console.log('第2个中间件[后置]：error!');	
+	// console.log('第2个中间件[后置]：error!');
+	
+	// 判断是否是json请求
+	let isJsonRequest = ctx.accepts('json', 'html') == 'json';
+	// console.log(isJsonRequest);
 
 	try{
 		// 先执行后需内容，后判断错误
 		await next();		
-		// console.log('=====>>>',ctx.response.status);
-		if(ctx.response.status==200) return;
+
+		// 1. 记录访问日志
+		if(ctx.ENV.ACCESS_LOG=='1'){//访问日志
+			ctx.LOG('access').info(ctx.response.status, {
+				uri:ctx.href,//originalUrl
+				ip:ctx.ip,
+				time: (new Date).toLocaleString(),
+			});
+		}
+
+
+		// 2. 处理页面
+		if(ctx.response.status==200){
+			// 200则为成功页面
+		}
 
 		/* 
 		  关于koa的返回：
@@ -22,22 +39,23 @@ module.exports.errPages = async (ctx, next)=>{
 			有body，无status，则状态码为200
 			无body，有status，则body为OK			
 		*/
-		if(ctx.response.status==404) {
+		else if(ctx.response.status==404) {
 			// 无错误：仅是未匹配到路由时为404
-			await ctx.render('hiwork/epage-product', {
-				code:404, 
-				message: "受访页面不存在"
-			});
+			if(isJsonRequest){
+				ctx.RTN.fail("受访页面不存在");
+			}
+			else{
+				await ctx.render('hiwork/epage-product', {
+					code:404, 
+					message: "受访页面不存在"
+				});
+			}		
 		}
 		else{
-			//无错误：仅是 http状态码返回 非200
-			await ctx.render('hiwork/epage-product', {
-				code:ctx.response.status, 
-				message: "非正常的状态码",
-				advice: "请联系管理员，为什么要设置这个状态码？",
-			});
+			// 非正常的状态码（但无错误产生），也不做处理
+			//提示：其它情况：不是200，不是404，均按自已的方式处理
 		}
-		
+
 	}
 	
 	// 出现错误
@@ -61,27 +79,21 @@ module.exports.errPages = async (ctx, next)=>{
 		}
 		
 		//1. 记录日志
-		const logger = require("./Logger.js")();
 		let errText = getLogErrorTxt(e);
-		logger.error(errText);
-		// console.log(e, e.stack);//如上面日志记录有误，请通过此行查看
-		
-		//2. 显示错误页面
-		if(ctx.accepts('json', 'text') == 'json'){
-			if(ctx.state.modeType=='product'){
-				ctx.state.body.fail('系统报错, 请联系管理员解决');
-			}
-			else{
-				ctx.state.body.fail(errText);
-			}
+
+		if(ctx.ENV.ERROR_LOG=='1'){//错误日志
+			ctx.LOG('error').error(errText,{
+				status:ctx.status,
+				uri:ctx.href,//originalUrl
+				ip:ctx.ip,
+				time: (new Date).toLocaleString(),
+			});
 		}
-		else{
-			if(ctx.state.modeType=='product'){
-				await ctx.render('hiwork/epage-product', {
-					code:ctx.response.status, 
-					message: "系统报错",
-					advice: "请联系管理员解决",
-				});
+		
+		//2. 显示错误页面 
+		if(ctx.ENV.DEBUG_INFO=='1'){ 
+			if(isJsonRequest){
+				ctx.RTN.fail(errText);
 			}
 			else{
 				e.emsg = e.stack;//加错误栈
@@ -91,10 +103,19 @@ module.exports.errPages = async (ctx, next)=>{
 				});
 			}
 		}
-
-
+		else{
+			if(isJsonRequest){
+				ctx.RTN.fail('系统报错, 请联系管理员解决');
+			}
+			else{
+				await ctx.render('hiwork/epage-product', {
+					code:ctx.response.status, 
+					message: "系统报错",
+					advice: "请联系管理员解决",
+				});
+			}
+		}
 	
-		
 	}
 	
 } 

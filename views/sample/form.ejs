@@ -9,38 +9,62 @@
 <body>
 <div id="page">
 
-  <h3>用户列表：<button>加载</button></h3>
+  <h3>用户列表：<button @click="isShowAddform=!isShowAddform">{{addBtnText}}</button></h3>
   <ul>
     <li v-for="(obj, i) in rows" :key="i">
       {{obj.id}} - {{obj.email}} - {{obj.phone}} 
       <button @click="select(i)">编辑</button>
-      <button>删除</button>
+      <button @click="del(obj.id)">删除</button>
     </li>
   </ul>
   
+  <hr>
 
-
-
-  <h3>添加新用户：</h3>
-  <div id="form">
-    邮箱：
-    <input v-model="newrow.email" type="text"><br/>
-
-    手机：
-    <input v-model="newrow.phone" type="text"><br/>
-
-    密码：
-    <input v-model="newrow.password" type="text"><br/>
-
-    <button type="button" @click="submit">提交</button>
-
+  <div v-show="isShowAddform">
+    <h3>添加用户</h3>
+    <addupdateform :row="newRow"></addupdateform>
+    <button type="button" @click="add">新增</button>  
   </div>
 
+  <div v-show="editIndex>-1">
+    <h3>更新用户信息:</h3>
+    <addupdateform :row="edtrow"></addupdateform>
+    <button type="button" @click="update">提交更改</button>
+
+  </div>
 
 </div>
 <script src="/-js/vue.3.2.31.js"></script>
 <script src="/-js/axios.min.js"></script>
+<script type="text/x-template" id="rowForm">
+  <div id="form" :row="row">
+
+    <div v-show="row.id>0">
+      id:
+      <input disabled  v-model="row.id" type="text"><br/>
+    </div>
+
+    邮箱：
+    <input v-model="row.email" type="text"><br/>
+
+    手机：
+    <input v-model="row.phone" type="text"><br/>
+
+    密码：
+    <input v-model="row.password" type="text"><br/>
+
+
+  </div>
+</script>
 <script>
+
+const newRowDefault = {
+  email: "a@abc.com",
+  password: "123",
+  phone: 666,
+}
+
+
 const app = Vue.createApp({
   mounted(){
     setTimeout(()=>{
@@ -49,23 +73,69 @@ const app = Vue.createApp({
     
   },
   data() {
-    return { 
-      newrow:{
+    return {
+      isShowAddform:false,//是否显示增加用户
+      editIndex:-1,//编辑行的序号
+      newRow:{
+        email: "a@abc.com",
+        password: "123",
+        phone: 666,
+      },
+      edtrow:{
         id:-1,
         email: "",
-        group: 0,
         password: "",
         phone: 0,
       },
       rows:[],
     }
   },
+  computed:{
+    addBtnText(){
+      return (this.isShowAddform ? '关闭->'  : '开启->') +'添加用户';
+    }
+  },
   methods:{
 
-    select(index){
-      this.newrow = this.rows[index];
+    // 更新一行
+    update(){
+      axios({
+        method:"put",
+        url:"/form/update",
+        data:this.edtrow,
+      })
+      .then(r=>{
+        if(r.data.stat>0){
+          alert("更新成功");
+          for(let k in this.edtrow){
+            this.rows[this.editIndex][k] = this.edtrow[k];
+          }
+
+          this.editIndex = -1;
+        }
+        else{
+          alert(r.data.msg);
+        }
+      })
+      .catch(e=>{
+        console.log(e);
+        alert(e.response.data.msg);
+      });
+
     },
 
+    // 选择一行
+    select(index){
+      // this.edtrow = this.rows[index];
+      for(let k in this.edtrow){
+        // console.log(k, this.rows[index][k]);
+        this.edtrow[k] = this.rows[index][k];
+      }
+
+      this.editIndex = index;
+    },
+
+    // 列表
     list(){
       axios({
         method:"get",
@@ -73,7 +143,30 @@ const app = Vue.createApp({
       })
       .then(r=>{
         console.log(r);
-        this.rows = r.data.data;
+        if(r.data.stat>0){
+          this.rows = r.data.data;
+        }
+        else{
+          alert(r.data.msg);
+        }
+
+        
+      })
+      .catch(e=>{
+        console.log(e.response.data);
+        alert(e.response.data.msg);
+      });
+    },
+
+    del(id){
+      if(confirm("确定要删除："+id)==false) return;
+
+      axios({
+        method:"delete",
+        url:"/form/del/"+id,
+      })
+      .then(r=>{
+        this.list();
       })
       .catch(e=>{
         console.log(e.response.data);
@@ -82,19 +175,26 @@ const app = Vue.createApp({
     },
 
 
-    submit(){
+    // 新增
+    add(){
       console.log('提交表单');
       axios({
         method:"post",
         url:"/form/add",
-        data:{
-          email:this.newrow.email,
-          phone:this.newrow.phone,
-          password:this.newrow.password,
-        }
+        data:this.newRow
       })
       .then(r=>{
         console.log(r);
+        if(r.data.stat<1){
+          alert(r.data.msg);
+        }
+        else{
+          alert('创建成功');
+          this.newRow = {...newRowDefault};
+          this.isShowAddform=false;
+
+          this.list();
+        }
       })
       .catch(e=>{
         console.log(e.response.data);
@@ -104,8 +204,17 @@ const app = Vue.createApp({
   }
 });
 
+
+// 定义一个名为 button-counter 的新全局组件
+app.component('addupdateform', {
+  template: "#rowForm",
+  props:['row'],
+})
+
 const vm = app.mount('#page')
 
 </script>
+
+
 </body>
 </html>

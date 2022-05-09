@@ -46,7 +46,7 @@ module.exports = (staticDir='public')=>{
 		catch(err){
 
 			// 注入state数据
-			pushInState(ctx);
+			// pushInState(ctx);
 			
 			// 框架页面交给后面进行处理
 			await next();

@@ -9,7 +9,7 @@ __*
 *.bak
 .*
 
-!app/node_modules
+!.example.env
 
-run/logs/*
-!run/logs/.gitkeep
+logs/*
+!logs/.gitkeep

@@ -1,5 +1,3 @@
-//json格式返回的中间件
-
 
 const success = function(msg="success", dt=[]){
 	// console.log(arguments);
@@ -20,60 +18,53 @@ const fail = function(msg="fail", data=[]){
 }
 
 
-const jsonHeader = (ctx)=>{
-  // ctx.response.status = 200;//状态码
+// response+json格式，通用设置
+// 注意：正常处理中的json均应为200状态码（非200的表示有错误发生）
+const jsonHeader = (ctx, httpCode=200)=>{
+  ctx.response.status = httpCode;//状态码
   ctx.set('Content-Type', 'application/json');
   ctx.set('Access-Control-Allow-Origin', '*');
   ctx.set("Access-Control-Allow-Methods", 'GET,POST,PUT,DELETE');
-
-  // 如有输出则不再输出
-  if(!!ctx.body){
-    console.log('已有输出，不能再次输出！！！');//后期转为logger记录
-    return;
-  }
-  
 }
 
 
 
-module.exports = ()=>{
+module.exports = ctx=>{
 
-	return async (ctx, next)=>{
+  return {
 
-    ctx.state.body = {
-
-      // json 成功
-      success(msg="success", dt=[]){
-        jsonHeader(ctx);
+    // json 成功
+    success(msg="success", dt=[], httpCode=200){
+      jsonHeader(ctx, httpCode);
+  
+      if(!ctx.body)
         ctx.body = success.apply(null, arguments);
-      },
-
-      // json 失败
-      fail(msg="fail", data=[]){
-        jsonHeader(ctx);
+    },
+  
+    // json 失败
+    fail(msg="fail", data=[], httpCode=200){
+      jsonHeader(ctx, httpCode);
+  
+      if(!ctx.body)
         ctx.body = fail.apply(null, arguments);
-      },
-
-      // html返回
-      html(html, status=200){
-
-        // 如有输出则不再输出
-        if(!!ctx.body){
-          console.log('已有输出，不能再次输出！！！');//后期转为logger记录
-          return;
-        }
-
-
+    },
+  
+    // html返回
+    html(html, status=200){
+  
+      // 如有输出则不再输出
+      if(!ctx.body){
         // 返回状态码：默认200
         ctx.response.status = status;
-        ctx.set('Content-Type', 'text/html');
-        ctx.body = html;
+
+        // 警告：不设置'Content-Type'时，browser根据内容自动选择。这里强制为text/html型
+        // ctx.type = 'text/plain; charset=utf-8';
+        ctx.type = 'text/html; charset=utf-8';
+        ctx.body = html || 'LUCK';
       }
-
+  
     }
-
-    // 执行下一个中间件
-    await next();
+  
   };
 
 }

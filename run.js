@@ -9,16 +9,12 @@
 	// 2. 静态资源[第一个中间件: 普通页面则next]
 	const static_ = require('./system/core/Static.js');
 	app.use(static_('public'));// /public为公共资源目录
-	// static_('public');// /public为公共资源目录
 	
 
 	// 3. 框架基础配置
-	// const base = require("./system/Base.js");
-	// app.use(base);
+	const base = require("./system/core/Base.js");
+	app.use(base(app));
 	
-	// 4. 引入日志（不再引入日志）
-	// const logger = require('./system/Logger.js');
-	// app.use(logger);
 
 	// 4. 载入koa视图中间件（必须在控制器之前, 在错误页前）
 	const view = require('./system/core/View.js');
@@ -28,18 +24,12 @@
 	const error = require('./system/core/Error.js');
 	app.use(error.errPages);
 
-	
-	// 6. json格式页面（在路由中间件前执行）
-	const rtn = require('./system/core/Rtn.js');
-	app.use(rtn());
 
-
-	// 7. 加载koa-body支持对post的解析
+	// 6. 加载koa-body支持对post的解析
 	const koaBody = require('koa-body');
 	app.use(koaBody());
 
 
-	
 	// 测试用(前置)中间件
 	// app.use(async (ctx, next)=>{
 	// 	console.log( 'ceshi middleware ouput at : ' + (new Date()) );
@@ -60,15 +50,9 @@
 	const myrouter = require('./system/core/Route.js');
 	app.use(myrouter.routes());
 
-	// app.get('/users/:id', function *(next) {
-	// 	var user = yield User.findOne(this.params.id);
-	// 	this.body = user;
-	// });
 
-
-
-	// 启动侦听
-	const port=81;
+	// 8. 启动侦听
+	const port =  app.context.ENV.port;
 	app.listen(port);
 	console.log(`app started: 0.0.0.0:${port}`);
 

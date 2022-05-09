@@ -30,13 +30,7 @@ router.get('/sample', async (ctx, next) => {
 
 //2. 示例：商品列表展示
 router.get('/goods', async (ctx, next) => {
-
-	// ctx.body = ctx;
-	// return;
-
-	// 引入db库（注意：要先配置数据库，并预先准备好数据）
-	const db=require(path.resolve("system/library/Db.js"));
-	
+ 	
 	//显示条数
 	let show = (ctx.query.show>=1 && ctx.query.show<=100) 
 	  ? Number(ctx.query.show) 
@@ -46,16 +40,12 @@ router.get('/goods', async (ctx, next) => {
 	let start = Math.floor(Math.random()*(100-50)+50);
 
 	// 取数据
-	let rows = await db.select('select * from t_tb_goods order by id desc limit ?,?', [start, show], 2);
+	let rows = await ctx.DB.select('select * from t_tb_goods order by id desc limit ?,?', [start, show], 2);
 
-	// 测试：sql出错
-	// let rows = await db.select('select * from t_wy_goods6 order by id desc limit 20', [10], 2);
-
-	// ctx.body = rows;//普通返回查询数据
 	await ctx.render('sample/goods', {
 		rows,
 		uri:ctx.request.url,//记录当前uri
-	});//模版显示
+	});
 
 });
 
@@ -72,8 +62,7 @@ router.get(/^\/goods\/(\d{2,5})(\.html)?$/, async (ctx, next) => {
 	let uri = ctx.query.uri || '/goods/';
 
 	// 查询商品信息
-	const db=require(path.resolve("system/library/Db.js"));
-	const rowObj=await db.select('select * from t_tb_goods where id=?', [nid], 1);
+	const rowObj=await ctx.DB.select('select * from t_tb_goods where id=?', [nid], 1);
 
 	// ctx.body = rowObj; return;
 	await ctx.render('sample/good', {
@@ -84,47 +73,83 @@ router.get(/^\/goods\/(\d{2,5})(\.html)?$/, async (ctx, next) => {
 });
 
 
+router.get('/form/cs', async (ctx, next) => {
+	await ctx.DB.insert ('xxx', {id:5, stat:1});
+	ctx.body='yes'
+});
 
-//1. 
+
+
+// == 表单 =================================================
+//显示表单主页面
 router.get('/form', async (ctx, next) => {
 	await ctx.render('sample/form');
 });
 
-// 增加
+
+// 增加一条
 router.post('/form/add', async (ctx, next) => {
 
 	// 取得post数据
 	let {email, phone, password} = ctx.request.body;
 
-
 	// 写入数据库
-	const db=require(path.resolve("system/library/Db.js"));
-	let r = await db.execute('insert chy.t_cs_user (email, phone, password) values(?,?,?);', [email, phone, password]);
+	let res = await ctx.DB.insert ('chy.t_cs_user', {email, phone, password});
 
-	// console.log(r);
-	ctx.state.logger('console').info('数据库处理结果：', r);
-	
+	// ctx.state.logger('console').info('数据库处理结果：', r);
 
 	// 返回结果
-	// ctx.body = 'yes';
-	r.matched>0 
-		? ctx.state.body.success(r)
-		: ctx.state.body.fail('添加失败');
+	res.affected==1 
+		? ctx.RTN.success(res)
+		: ctx.RTN.fail('添加失败');
 	
 });
 
-// 读取
+
+// 读取列表（多条）
 router.get('/form/list', async (ctx, next) => {
 
 	// 写入数据库
-	const db=require(path.resolve("system/library/Db.js"));
-	let r = await db.select('select * from chy.t_cs_user order by id desc limit ?;', [10]);
+	let r = await ctx.DB.select('select * from chy.t_cs_user order by id desc limit ?;', [10]);
 
-	ctx.state.body.success(r);
+	// ctx.LOG().info('数据库处理结果：', r);
 
+	ctx.RTN.success(r);
 });
 
 
+// 更新一条
+router.put('/form/update', async (ctx, next) => {
+
+	// 取待更新数据
+	let pdata = ctx.request.body;
+	delete pdata.ctime;
+
+	// 写入数据库
+	let res = await ctx.DB.update('chy.t_cs_user', pdata, ['id']);
+
+	if(res==false)
+		ctx.RTN.fail(res.getErr());
+	else{
+		if(res.affected<1)
+			ctx.RTN.fail('更新失败');
+		else if(res.changed<1)
+			ctx.RTN.fail('没有数据被更新（可能是新旧数据一样）');
+		else
+			ctx.RTN.success();
+	}
+});
+
+
+// 删除一条
+router.delete(/^\/form\/del\/(\d{1,5})$/, async (ctx, next) => {
+	let id=ctx.params[0];
+	let res = ctx.DB.del('chy.t_cs_user', {id});
+
+	res==false
+		? ctx.RTN.fail(r.getErr())
+		: ctx.RTN.success();
+});
 
 
 

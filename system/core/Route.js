@@ -15,13 +15,11 @@ let router = require('koa-router')();
 async function parseCtrollerToRouter(controllerDir){
 	//1. 取得控制器目录
 	controllerDir = path.resolve(controllerDir);
-	// console.log(controllerDir);
 
 	//2. 读取控制器目录下的所有控制器文件
 	let files = await fs.readdir(controllerDir);
 	// .js结尾为合法控制器文件
 	files = files.filter(f=>f.slice(-3).toLowerCase()=='.js');
-	// console.log('controllers: ',files);
 
 	//3. 将控制器中配置载入路由实例
 	for(let f of files){

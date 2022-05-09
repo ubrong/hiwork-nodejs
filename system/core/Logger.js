@@ -18,10 +18,9 @@
 
 const log4js = require("log4js");
 const path = require("path");
-const modeType = require(path.resolve('config.js')).modeType;
 
 // 1.设置 日志根目录
-const setLogDir = dirname => path.resolve('run/logs/', dirname);
+const setLogDir = dirname => path.resolve('logs/', dirname);
 
 // log4js配置日志器
 const config = {
@@ -34,30 +33,53 @@ const config = {
 			type:'console'
 		},
 
-		// -> 文件 develop
-		developFile:{
+		// -> 文件 access
+		access:{
 			type: 'dateFile',
-			filename: setLogDir('develop.log'),
+			filename: setLogDir('access.log'),
 			pattern: '.yyyy-MM-dd',
 		},
 
-		// -> 文件 product
-		productFile:{
+		// -> 文件 error
+		error:{
 			type: 'dateFile',
-			filename: setLogDir('product.log'),
+			filename: setLogDir('error.log'),
 			pattern: '.yyyy-MM-dd',
-		}
+		},
 
+		// -> 文件 debug
+		debug:{
+			type: 'dateFile',
+			filename: setLogDir('debug.log'),
+			pattern: '.yyyy-MM-dd',
+		},
 
 	},
 	
 	// 日志分类
 	categories: {
-		
-		// 默认：console+file(当调用的分类不存在时将被调用)
-		default: {
-			appenders: ['console', 'developFile'], 
-			level: 'ALL',
+
+		default:{
+			appenders: ['console'], 
+			level: 'all',
+		},
+
+		// 访问日志
+		access:{
+			appenders: ['access'],
+			level: 'all',
+		},
+
+		// 错误日志
+		error:{
+			appenders: ['error'],
+			level: 'all',
+		},
+
+		// 调试日志
+		debug:{
+			appenders: ['debug'], 
+			level: 'all',
 		},
 
 		// 无任何输出
@@ -66,38 +88,19 @@ const config = {
 			level: 'OFF',
 		},
 
-		console:{
-			appenders: ['console'], 
-			level: 'all',
-		},
-		
-		// file
-		product: {
-			appenders: ['productFile'],
-			level: 'all',//只记录error以上
-		},
-		
-		// console+file
-		// develop: {
-		// 	appenders: ['console', 'developFile'],
-		// 	level: 'all'
-		// }
 	},
 	
 }
 
 
-// 以闭包导出
-log4js.configure(config);//log4写入配置
+//写入配置
+log4js.configure(config);
 
-// module.exports = log4js.getLogger(modeType);
-module.exports = (category)=>{
-	console.log('logger 被引入');
-	return log4js.getLogger(category || modeType);
-}
+//导出实例
+module.exports = log4js.getLogger;
 
 /* 
-let logger = log4js.getLogger('errLogger');
+let logger = log4js.getLogger('category');
 logger.trace('this is default')
 logger.debug('this is default')
 logger.info('this is default')
