@@ -11,8 +11,8 @@ module.exports.errPages = async (ctx, next)=>{
 	// console.log('第2个中间件[后置]：error!');
 	
 	// 判断是否是json请求
-	let isJsonRequest = ctx.accepts('json', 'html') == 'json';
-	// console.log(isJsonRequest);
+	let isJsonRequest = ctx.response.is('json');
+	// ctx.LOG().info(isJsonRequest, ctx.url);
 
 	try{
 		// 先执行后需内容，后判断错误
@@ -42,7 +42,7 @@ module.exports.errPages = async (ctx, next)=>{
 		else if(ctx.response.status==404) {
 			// 无错误：仅是未匹配到路由时为404
 			if(isJsonRequest){
-				ctx.RTN.fail("受访页面不存在");
+				ctx.RTN.fail("受访页面不存在999", [], 404);//此必需指定404
 			}
 			else{
 				await ctx.render('hiwork/epage-product', {
