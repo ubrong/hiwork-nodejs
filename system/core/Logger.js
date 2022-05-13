@@ -37,21 +37,21 @@ const config = {
 		access:{
 			type: 'dateFile',
 			filename: setLogDir('access.log'),
-			pattern: '.yyyy-MM-dd',
+			pattern: 'yyyy-MM-dd',
 		},
 
 		// -> 文件 error
 		error:{
 			type: 'dateFile',
 			filename: setLogDir('error.log'),
-			pattern: '.yyyy-MM-dd',
+			pattern: 'yyyy-MM-dd',
 		},
 
 		// -> 文件 debug
 		debug:{
 			type: 'dateFile',
 			filename: setLogDir('debug.log'),
-			pattern: '.yyyy-MM-dd',
+			pattern: 'yyyy-MM-dd',
 		},
 
 	},
