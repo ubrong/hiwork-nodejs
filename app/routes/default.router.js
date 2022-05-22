@@ -92,7 +92,7 @@ router.get('/mix', async (ctx, next) => {
   // ctx.response.status = 401;（不推荐使用）
 	// ctx.response.body = '请登陆';//作为401的页面内容，否则为默认的“Unauthorized”
 	// 建议用下面2种方式反回异常状态码页面：
-	ctx.RTN.html('<H1>请登陆999</H1>', 401);
+	ctx.RTN.html('<H1>请登陆</H1>', 401);
 	// ctx.RTN.fail('请登陆', [], 401);
 
 	// await ctx.render('hiwork/epage-develop.ejs');//打开一个信息不完整的错误页面，但状态码是200

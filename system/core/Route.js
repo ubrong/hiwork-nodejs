@@ -9,7 +9,14 @@
 
 const fs = require('fs/promises');
 const path = require('path');
-let router = require('koa-router')();
+// let router = require('koa-router')();
+
+// 读取环境变量中的URI_PREFIX值，并设置到路由 
+let envObj = require("dotenv").config().parsed;
+let Koa = require('koa-router');
+let router = new Koa({
+  prefix: envObj.URI_PREFIX ? "/"+envObj.URI_PREFIX.replace(/(^\/)|(\/$)/g, '') : "",
+});
 
 // controllerDir为控制器目录（注意使用相对路径）
 async function parseCtrollerToRouter(controllerDir){
