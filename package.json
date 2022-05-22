@@ -9,9 +9,10 @@
     "delay": "1500"
   },
   "scripts": {
-    "start": "node run.js",
-    "dev": "nodemon --inspect ./run.js",
-    "dev0": "supervisor ./run.js"
+    "start": "node index.js",
+    "dev": "nodemon --inspect ./index.js",
+    "dev0": "supervisor ./index.js",
+    "wss": "nodemon --inspect ./wss.js"
   },
   "dependencies": {
     "dotenv": "^16.0.0",
@@ -22,7 +23,8 @@
     "koa-views": "^7.0.1",
     "log4js": "^6.3.0",
     "mime": "^2.5.2",
-    "mysql": "^2.18.1"
+    "mysql": "^2.18.1",
+    "ws": "^8.6.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.16"
