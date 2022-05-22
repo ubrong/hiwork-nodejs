@@ -31,7 +31,7 @@ module.exports = (app)=>{
   return async function(ctx, next){
 
     // 2.1 rtn库(要通过上下文写入原型)
-    app.context.RTN = require(path.resolve('system/core/Rtn.js'))(ctx);
+    app.context.RTN = require(path.resolve('system/core/Rtn.js')).rtn(ctx);
 
     // 加入根目录，默认最后无/,
     // ctx.state.docRoot = path.resolve();

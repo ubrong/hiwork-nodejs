@@ -1,21 +1,49 @@
+class Rtn{
 
-const success = function(msg="success", dt=[]){
-	// console.log(arguments);
-	let time = (new Date).getTime();
-	
-	return typeof arguments[0]=="object" 
-		? {stat:1, msg:'success', time, data:arguments[0]}
-		: {stat:1, msg, time, dt};
+  stat=0;
+  msg='fail';
+  time=Date.now();
+  data=[];
+
+  #rtn(msg, data){
+
+    if(typeof(arguments[0]) == 'object') {
+      this.data=arguments[0];
+      this.msg= this.stat ==1 ? "success" : "fail";
+    }
+    else{
+      this.data=data;
+      this.msg=msg;
+    }
+
+    return this;
+  }
+
+  fail(msg="fail", dt=''){
+    this.stat = 0;
+    return this.#rtn(msg, dt);
+  }
+
+  success(msg="success", dt=''){
+    this.stat = 1;
+    return this.#rtn(msg, dt);
+  }
+
+  // 将当前实例字符串化
+  stringify() {
+    return JSON.stringify(this);
+  }
+
 }
 
-const fail = function(msg="fail", data=[]){
-	
-	let time = (new Date).getTime();
-	
-	return typeof arguments[0]=="object"
-		? {stat:0, msg:'fail', time, data:arguments[0]}
-		: {stat:0, msg, time, data};
+const success = (msg="success", data='')=>{
+  return (new Rtn).success(msg, data);
 }
+
+const fail = (msg="fail", data='')=>{
+  return (new Rtn).fail(msg, data);
+}
+
 
 
 // response+json格式，通用设置
@@ -29,7 +57,9 @@ const jsonHeader = (ctx, httpCode=200)=>{
 
 
 
-module.exports = ctx=>{
+module.exports.success=success;
+module.exports.fail=fail;
+module.exports.rtn = ctx=>{
 
   return {
 
