@@ -1,32 +1,25 @@
 class Rtn{
 
-  stat=0;
-  msg='fail';
-  time=Date.now();
-  data=[];
+  code=0;//状态码 0：失败， 1：成功  x：其它自定义
+  msg="";//说明文字
+  time=Date.now();//当前时间戳
+  data=[];//数据
 
-  #rtn(msg, data){
 
-    if(typeof(arguments[0]) == 'object') {
-      this.data=arguments[0];
-      this.msg= this.stat ==1 ? "success" : "fail";
-    }
-    else{
-      this.data=data;
-      this.msg=msg;
-    }
-
+  #rtn(msg, data, code){
+    this.code = code;
+    this.data = data;
+    this.msg = msg;
     return this;
   }
 
-  fail(msg="fail", dt=''){
-    this.stat = 0;
-    return this.#rtn(msg, dt);
+  fail(msg="fail", data='', code=0){
+    return this.#rtn.apply(this, arguments);
   }
 
-  success(msg="success", dt=''){
-    this.stat = 1;
-    return this.#rtn(msg, dt);
+  success(msg="success", data='', code=1){
+    if(typeof(msg)=='object') [data, msg] = [msg, data];
+    return this.#rtn.call(this, msg, data, code);
   }
 
   // 将当前实例字符串化
@@ -36,12 +29,12 @@ class Rtn{
 
 }
 
-const success = (msg="success", data='')=>{
-  return (new Rtn).success(msg, data);
+const success = (msg="success", data='', code=1)=>{
+  return (new Rtn).success(msg, data, code);
 }
 
-const fail = (msg="fail", data='')=>{
-  return (new Rtn).fail(msg, data);
+const fail = (msg="fail", data='', code=0)=>{
+  return (new Rtn).fail(msg, data, code);
 }
 
 
