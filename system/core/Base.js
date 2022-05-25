@@ -25,7 +25,9 @@ module.exports = (app)=>{
 
   // 1.4 环境变量数据
   let envObj = require("dotenv").config();
-  app.context.ENV = envObj.parsed;
+  // app.context.ENV = envObj.parsed;
+  global.HW = envObj.parsed;
+
 
   // 第二部分：通过上下文 ctx 添加数据
   return async function(ctx, next){

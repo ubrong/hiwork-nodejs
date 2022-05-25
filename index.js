@@ -52,7 +52,7 @@
 
 
 	// 8. 启动侦听
-	const port =  app.context.ENV.PORT;
+	const port =  global.HW.PORT;
 	app.listen(port);
 	console.log(`app started: 0.0.0.0:${port}`);
 
