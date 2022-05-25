@@ -1,5 +1,5 @@
 const path = require('path');
-const router = require(path.resolve('system/core/Route')).router;
+const {router} = require(path.resolve('system/core/Route'));
 
 /* 
  * 示例1：展示视图加载和在视图中使用语法案例
@@ -29,7 +29,7 @@ router.get('/sample', async (ctx, next) => {
 
 
 //2. 示例：商品列表展示
-router.get('/goods', async (ctx, next) => {
+router.get('/goods/', async (ctx, next) => {
  	
 	//显示条数
 	let show = (ctx.query.show>=1 && ctx.query.show<=100) 
@@ -53,7 +53,8 @@ router.get('/goods', async (ctx, next) => {
 
 //3. 单个商品展示
 //  get '/goods/(\d+):one'
-router.get(/^\/goods\/(\d{2,5})(\.html)?$/, async (ctx, next) => {
+// router.get(/^\/goods\/(\d{2,5})(\.html)?$/, async (ctx, next) => {
+router.get('/goods/(\\d{2,5})(\.html)?', async (ctx, next) => {
 
 	// 取得商品id
 	let nid = Number(ctx.params[0]);
@@ -82,7 +83,7 @@ router.get('/form/cs', async (ctx, next) => {
 
 // == 表单 =================================================
 //显示表单主页面
-router.get('/form', async (ctx, next) => {
+router.get('/form/', async (ctx, next) => {
 	await ctx.render('sample/form');
 });
 
@@ -150,7 +151,5 @@ router.delete(/^\/form\/del\/(\d{1,5})$/, async (ctx, next) => {
 		? ctx.RTN.fail(r.getErr())
 		: ctx.RTN.success();
 });
-
-
 
 

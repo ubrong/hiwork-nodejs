@@ -12,10 +12,12 @@ const path = require('path');
 // let router = require('koa-router')();
 
 // 读取环境变量中的URI_PREFIX值，并设置到路由 
-let envObj = require("dotenv").config().parsed;
-let Koa = require('koa-router');
-let router = new Koa({
-  prefix: envObj.URI_PREFIX ? "/"+envObj.URI_PREFIX.replace(/(^\/)|(\/$)/g, '') : "",
+let prefix = global.HW.URI_PREFIX.replace(/(^\/)|(\/$)/g, '');
+if(prefix) prefix = "\/"+prefix;
+
+let KoaRouter = require('koa-router');
+let router = new KoaRouter({
+  prefix
 });
 
 // controllerDir为控制器目录（注意使用相对路径）
@@ -36,6 +38,7 @@ async function parseCtrollerToRouter(controllerDir){
 
 // 导出：路由实例（由各控制器将自已路由加入实例）
 module.exports.router = router;
+
 
 // 导出：路由配置，供koa中间件使用
 // controllerDir为控制器目录（注意使用相对路径）

@@ -101,11 +101,11 @@ const app = Vue.createApp({
     update(){
       axios({
         method:"put",
-        url:"/form/update",
+        url:"./update",
         data:this.edtrow,
       })
       .then(r=>{
-        if(r.data.stat>0){
+        if(r.data.code>0){
           alert("更新成功");
           for(let k in this.edtrow){
             this.rows[this.editIndex][k] = this.edtrow[k];
@@ -139,11 +139,11 @@ const app = Vue.createApp({
     list(){
       axios({
         method:"get",
-        url:"/form/list",
+        url:"./list",
       })
       .then(r=>{
         console.log(r);
-        if(r.data.stat>0){
+        if(r.data.code>0){
           this.rows = r.data.data;
         }
         else{
@@ -163,7 +163,7 @@ const app = Vue.createApp({
 
       axios({
         method:"delete",
-        url:"/form/del/"+id,
+        url:"./del/"+id,
       })
       .then(r=>{
         this.list();
@@ -180,12 +180,12 @@ const app = Vue.createApp({
       console.log('提交表单');
       axios({
         method:"post",
-        url:"/form/add",
+        url:"./add",
         data:this.newRow
       })
       .then(r=>{
         console.log(r);
-        if(r.data.stat<1){
+        if(r.data.code<1){
           alert(r.data.msg);
         }
         else{

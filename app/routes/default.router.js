@@ -1,5 +1,6 @@
 const path = require('path');
-const router = require(path.resolve('system/core/Route')).router;
+const {router} = require(path.resolve('system/core/Route'));
+
 
 
 // index
@@ -36,15 +37,16 @@ router.get('/throwErr', async function(ctx, next){
 
 //json格式输出（成功）
 router.get(
-	/^\/json\/(success|fail)(\.html)?$/i, 
+	// /^\/json\/(success|fail)(\.html)?$/i, //原生正则，但有路由前缀时不能解析，推荐下面写法
+	'/json/(success|fail)(\.html)?', 
 	async function(ctx, next){
 
 	// 取得输出类型：success|fail
 	let rtnType = ctx.params[0];
 
 	if(rtnType.toLowerCase()=='success')
-		ctx.RTN.success({name:'大刚', code:'100'});
-		// ctx.RTN.success('请求成功', {name:'大航', code:'98'});//效果同上
+		// ctx.RTN.success({name:'大刚', code:'100'});
+		ctx.RTN.success('请求成功', {name:'大刚', code:'98'});//效果同上
 	else
 		ctx.RTN.fail('出现了一个错误！');
 	
@@ -60,8 +62,9 @@ router.get('/user/:name', async function(ctx, next){
 
 
 // 正则路由
-router.get(/^\/news\/(\d{2,5})$/, async (ctx, next) => {
-	// 这种情况无法将正则匹配到的结果绑定到变量
+// router.get(/^\/news\/(\d{2,5})$/, async (ctx, next) => {
+router.get('/news/(\\d{2,5})', async (ctx, next) => {
+    // 这种情况无法将正则匹配到的结果绑定到变量
 	let id = ctx.params[0];
 	ctx.body = '当前的路径参数匹配(id)为：'+id;
 });
