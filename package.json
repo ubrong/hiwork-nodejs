@@ -9,10 +9,10 @@
     "delay": "1500"
   },
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon --inspect ./index.js",
-    "dev0": "supervisor ./index.js",
-    "wss": "nodemon --inspect ./wss.js"
+    "http": "node index.js",
+    "wss": "node ./-wss-dict.js",
+    "http-dev": "nodemon --inspect ./index.js",
+    "wss-dev": "nodemon --inspect ./websocket-server-demo",
   },
   "dependencies": {
     "dotenv": "^16.0.0",
