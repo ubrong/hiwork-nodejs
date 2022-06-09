@@ -42,7 +42,11 @@ module.exports.router = router;
 
 // 导出：路由配置，供koa中间件使用
 // controllerDir为控制器目录（注意使用相对路径）
-module.exports.routes = (controllerDir='app/routes')=>{
+module.exports.routes = ()=>{
+
+  // 取得路由目录
+  const controllerDir='app/'+global.HW.APP_NAME+'/routes';
+
 	// console.log('第4个中间件：ctl!');	
 	parseCtrollerToRouter(controllerDir);
 	return router.routes();

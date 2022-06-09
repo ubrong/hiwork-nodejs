@@ -1,15 +1,22 @@
 const mysql  = require('mysql');  
-const { join } = require('path');
-const path  = require('path');  
+const {resolve}  = require('path');  
 
 // 一、 连接池
-// 1.1 载入配置数据
-let dbConfig  = require( path.resolve('./app/db.config.js') ); 
-// console.log(dbConfig);
+// 1.1 载入配置数据(优先载入项目配置，无则加载全局配置)
+let dbConfig;
+try{
+  dbConfig  = require( 
+    resolve(
+      './app/'+global.HW.APP_NAME+'/db.config.js'
+    )
+  );
+}
+catch(e){
+  dbConfig  = require( resolve('./app/db.config.js') );
+}
 
 // 1.2 创建连接池
 const pool  = mysql.createPool(dbConfig);
-
 
 let emsg='ok';
 function getErr(){

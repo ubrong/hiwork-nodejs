@@ -9,10 +9,12 @@
     "delay": "1500"
   },
   "scripts": {
-    "http": "node index.js",
-    "wss": "node ./-wss-dict.js",
+    "http": "node ./index.js",
+    "wss": "node ./websocket-server-demo.js",
     "http-dev": "nodemon --inspect ./index.js",
-    "wss-dev": "nodemon --inspect ./websocket-server-demo",
+    "wss-dev": "nodemon --inspect ./websocket-server-demo.js",
+    "dev0": "nodemon --inspect ./index.js",
+    "dev1": "nodemon --inspect ./-wss-dict.js"
   },
   "dependencies": {
     "dotenv": "^16.0.0",
@@ -24,6 +26,7 @@
     "log4js": "^6.3.0",
     "mime": "^2.5.2",
     "mysql": "^2.18.1",
+    "redis": "^4.1.0",
     "ws": "^8.6.0"
   },
   "devDependencies": {
