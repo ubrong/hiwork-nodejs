@@ -5,20 +5,54 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>表单-注册</title>
+  <style>
+    body{
+      max-width: 680px;
+      margin:0 auto;
+    }
+
+    thead{
+      background-color: #888;
+      color:#fff;
+    }
+
+    tbody tr:nth-child(even){
+      background-color: #EEE;
+    }
+  </style>
 </head>
 <body>
 <div id="page">
 
-  <h3>用户列表：<button @click="isShowAddform=!isShowAddform">{{addBtnText}}</button></h3>
-  <ul>
-    <li v-for="(obj, i) in rows" :key="i">
-      {{obj.id}} - {{obj.email}} - {{obj.phone}} 
-      <button @click="select(i)">编辑</button>
-      <button @click="del(obj.id)">删除</button>
-    </li>
-  </ul>
+  <h3>hw-用户列表操作案例 ：</h3>
+  <div>
+    <button @click="isShowAddform=!isShowAddform">{{addBtnText}}</button>
+  </div>
+  <br>
+
+
+  <table width="100%" border="1" cellpadding="5"  rules="groups">
+    <thead>
+      <tr>
+        <td>ID</td>
+        <td>用户名</td>
+        <td>密码</td>
+        <td>操作</td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="(obj, i) in rows" :key="i">
+        <td>{{obj.id}}</td>
+        <td>{{obj.email}}</td>
+        <td>{{obj.phone}}</td>
+        <td>
+          <button @click="select(i)">编辑</button>
+          <button @click="del(obj.id)">删除</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
   
-  <hr>
 
   <div v-show="isShowAddform">
     <h3>添加用户</h3>
