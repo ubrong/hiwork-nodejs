@@ -13,20 +13,21 @@ const path = require('path');
 module.exports = (app)=>{
   // 第一部分：向 ctx原型 中添加数据
 
-  // 1.1 log库
+  // 1.1 环境变量数据
+  let envObj = require("dotenv").config();
+  // app.context.ENV = envObj.parsed;
+  global.HW = envObj.parsed;
+
+  // 1.2 log库
   app.context.LOG = require(path.resolve('system/core/Logger.js'));
   // 注意：logger返回是一个函数体，不要返回函数的执行结果（否则会造成多次创建实例）
 
-  // 1.2 db库
+  // 1.3 db库
   app.context.DB = require(path.resolve("system/library/Db.js"));
 
   // 1.3 项目根目录
   // app.context.pathResolve=path.resolve;
 
-  // 1.4 环境变量数据
-  let envObj = require("dotenv").config();
-  // app.context.ENV = envObj.parsed;
-  global.HW = envObj.parsed;
 
 
   // 第二部分：通过上下文 ctx 添加数据
