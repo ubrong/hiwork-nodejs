@@ -19,7 +19,7 @@ module.exports.errPages = async (ctx, next)=>{
 		await next();		
 
 		// 1. 记录访问日志
-		if(global.HW.ACCESS_LOG=='1'){//访问日志
+		if($hw.ACCESS_LOG=='1'){//访问日志
 			ctx.LOG('access').info(ctx.response.status, {
 				uri:ctx.href,//originalUrl
 				ip:ctx.ip,
@@ -84,7 +84,7 @@ module.exports.errPages = async (ctx, next)=>{
 		//1. 记录日志
 		let errText = getLogErrorTxt(e);
 
-		if(global.HW.ERROR_LOG=='1'){//错误日志
+		if($hw.ERROR_LOG=='1'){//错误日志
 			ctx.LOG('error').error(errText,{
 				status:ctx.status,
 				uri:ctx.href,//originalUrl
@@ -94,7 +94,7 @@ module.exports.errPages = async (ctx, next)=>{
 		}
 		
 		//2. 显示错误页面 
-		if(global.HW.DEBUG_INFO=='1'){ 
+		if($hw.DEBUG_INFO=='1'){ 
 			if(isJsonRequest){
 				ctx.RTN.fail(errText);
 			}

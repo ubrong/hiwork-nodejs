@@ -7,7 +7,7 @@ let dbConfig;
 try{
   dbConfig  = require( 
     resolve(
-      './app/'+global.HW.APP_NAME+'/db.config.js'
+      './app/'+$hw.APP_NAME+'/db.config.js'
     )
   );
 }

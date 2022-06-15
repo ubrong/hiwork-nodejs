@@ -12,9 +12,10 @@
 	
 
 	// 3. 框架基础配置
-	const base = require("./system/core/Base.js");
-	app.use(base(app));
-	
+	// const base = require("./system/core/Base.js");
+	// app.use(base(app));
+  require("./system/core/Base.js")(app);
+
 
 	// 4. 载入koa视图中间件（必须在控制器之前, 在错误页前）
 	const view = require('./system/core/View.js');
@@ -52,7 +53,7 @@
 
 
 	// 8. 启动侦听
-	const port =  global.HW.PORT;
+	const port = $hw.PORT;
 	app.listen(port);
 	console.log(`app started: 0.0.0.0:${port}`);
 

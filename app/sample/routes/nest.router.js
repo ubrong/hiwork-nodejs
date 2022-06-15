@@ -9,27 +9,27 @@ const {router, setRegExpUri}  = require(path.resolve('system/core/Route'));
 let groupRouter = require('koa-router')();
 
 groupRouter.get('/', async (ctx, next) => {
-  ctx.RTN.success('ok', 'china data!');
+   $rtn(ctx).success('ok', 'china data!');
 });
 
 groupRouter.get("/beijing", async (ctx, next) => {
-  ctx.RTN.success('ok', 'china-beijing data!');
+   $rtn(ctx).success('ok', 'china-beijing data!');
 });
 
 groupRouter.get('/shanghai', async (ctx, next) => {
-  ctx.RTN.success('ok', 'china-shanghai data!');
+   $rtn(ctx).success('ok', 'china-shanghai data!');
 });
 
 
 // 写入到分组路由+正则
 groupRouter.get('/zhejiang/(\\d+)', async (ctx, next) => {
-  ctx.RTN.success('ok', 'zhejiang -> cityId : '+ctx.params[0]);
+   $rtn(ctx).success('ok', 'zhejiang -> cityId : '+ctx.params[0]);
 });
 
 // 写入到顶级路由+正则
 router.get('/zhejiang/(\\d+)', async (ctx, next) => {
   // console.log(ctx.params);
-  ctx.RTN.success('ok', 'zhejiang -> cityId : '+ctx.params[0]);
+   $rtn(ctx).success('ok', 'zhejiang -> cityId : '+ctx.params[0]);
 });
 
 

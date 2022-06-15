@@ -31,7 +31,7 @@ class Redis{
 
   // 记录日志
   #log(...data){
-    if(global.HW.DEBUG_INFO==1){
+    if($hw.DEBUG_INFO==1){
       console.log.apply(this, data);
     }
   }
@@ -42,7 +42,7 @@ class Redis{
     try{
       redisConfig  = require( 
         resolve(
-          './app/'+global.HW.APP_NAME+'/redis.config.js'
+          './app/'+$hw.APP_NAME+'/redis.config.js'
         )
       );
     }
@@ -88,14 +88,16 @@ class Redis{
 
   //建立链接
   async connect() {
-    if(this.status==1) return;
+    // if(this.status==1) return;
 
     await this.client.connect();
   }
 
   //断开链接
   quit() {
-    this.client.quit()
+    this.client.quit();
+    // this.status = -1;
+    // this.client = undefined;
   }
 
   //添加数据
@@ -147,5 +149,6 @@ class Redis{
 
 }
  
-module.exports = new Redis();
+// module.exports = new Redis();
+module.exports.Redis = Redis;
 

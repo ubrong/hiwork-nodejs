@@ -59,28 +59,30 @@ const config = {
 	// 日志分类
 	categories: {
 
+    // 默认类别：在node控制台记录所有日志类型
 		default:{
 			appenders: ['console'], 
 			level: 'all',
 		},
+    
+		// 调试日志：所有调试相关的数据记录应使用此类别
+		debug:{
+			appenders: ['debug'], 
+			level: 'all',
+		},
 
-		// 访问日志
+		// 访问日志：用于系统记录access.log
 		access:{
 			appenders: ['access'],
 			level: 'all',
 		},
 
-		// 错误日志
+		// 错误日志：用于系统记录error.log
 		error:{
 			appenders: ['error'],
 			level: 'all',
 		},
 
-		// 调试日志
-		debug:{
-			appenders: ['debug'], 
-			level: 'all',
-		},
 
 		// 无任何输出
 		nolog:{

@@ -14,7 +14,7 @@ router.get('/', async (ctx, next) => {
 		
 	// 输出一个普通文本
 	// ctx.body = '这是主页'+(new Date).toLocaleString();
-	// ctx.RTN.html('这是主页'+(new Date).toLocaleString());
+	// $rtn(ctx).html('这是主页'+(new Date).toLocaleString());
 	
 	// 以模版输出html
 	await ctx.render('hiwork/index', {title:'HiWork-NodeJs FrameWork'});
@@ -32,10 +32,10 @@ router.get(
 	let rtnType = ctx.params[0];
 
 	if(rtnType.toLowerCase()=='success')
-		// ctx.RTN.success({name:'大刚', code:'100'});
-		ctx.RTN.success('请求成功', {name:'大刚', code:'98'});//效果同上
+		//  $rtn(ctx).success({name:'大刚', code:'100'});
+		 $rtn(ctx).success('请求成功', {name:'大刚', code:'98'});//效果同上
 	else
-		ctx.RTN.fail('出现了一个错误！');
+		 $rtn(ctx).fail('出现了一个错误！');
 	
 });
 
@@ -59,8 +59,8 @@ router.get('/throwErr', async function(ctx, next){
 //4. 动态路由：路径参数
 router.get('/user/:name', async function(ctx, next){
 	let name = ctx.params.name;
-	ctx.RTN.html( `<h1>Hello ${name}, welcome to HiWork!</h1>` );
-	ctx.RTN.html( `这个不会再输出` );
+	 $rtn(ctx).html( `<h1>Hello ${name}, welcome to HiWork!</h1>` );
+	 $rtn(ctx).html( `这个不会再输出` );
 });
 
 
@@ -77,7 +77,7 @@ router.get('/news/(\\d{2,5})', async (ctx, next) => {
 router.get('/debug', async (ctx, next) => {
 
 	// 引入日志库（注意：如果不传入日志类别，将使用当前模式作为类别）
-	ctx.LOG().info('hw note:', [
+	ctx.LOG('debug').info('hw note:', [
 		'这是 ',
 		(new Date).toLocaleString(), 
 		'生成的一条console信息', 
@@ -85,7 +85,6 @@ router.get('/debug', async (ctx, next) => {
 	]);
 
 	ctx.body='<h1>请通过 控制台 和 debug日志文件 查看调试信息。</h1>';
-
 });
 
 
@@ -98,8 +97,8 @@ router.get('/mix', async (ctx, next) => {
   // ctx.response.status = 401;（不推荐使用）
 	// ctx.response.body = '请登陆';//作为401的页面内容，否则为默认的“Unauthorized”
 	// 建议用下面2种方式反回异常状态码页面：
-	ctx.RTN.html('<H1>请登陆</H1>', 401);
-	// ctx.RTN.fail('请登陆', [], 401); //json格式
+	 $rtn(ctx).html('<H1>请登陆</H1>', 401);
+	//  $rtn(ctx).fail('请登陆', [], 401); //json格式
 
 	// await ctx.render('hiwork/epage-develop.ejs');//打开一个信息不完整的错误页面，但状态码是200
 

@@ -12,7 +12,7 @@ const path = require('path');
 // let router = require('koa-router')();
 
 // 读取环境变量中的URI_PREFIX值，并设置到路由 
-let prefix = global.HW.URI_PREFIX.replace(/(^\/)|(\/$)/g, '');
+let prefix =$hw.URI_PREFIX.replace(/(^\/)|(\/$)/g, '');
 if(prefix) prefix = "\/"+prefix;
 
 let KoaRouter = require('koa-router');
@@ -45,7 +45,7 @@ module.exports.router = router;
 module.exports.routes = ()=>{
 
   // 取得路由目录
-  const controllerDir='app/'+global.HW.APP_NAME+'/routes';
+  const controllerDir='app/'+$hw.APP_NAME+'/routes';
 
 	// console.log('第4个中间件：ctl!');	
 	parseCtrollerToRouter(controllerDir);

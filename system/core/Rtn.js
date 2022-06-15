@@ -1,10 +1,10 @@
-class Rtn{
+// rtn数据格式化
+class RtnFomat{
 
   code=0;//状态码 0：失败， 1：成功  x：其它自定义
   msg="";//说明文字
   time=Date.now();//当前时间戳
   data=[];//数据
-
 
   #rtn(msg, data, code){
     this.code = code;
@@ -19,12 +19,56 @@ class Rtn{
 
   success(msg="success", data='', code=1){
     if(typeof(msg)=='object') [data, msg] = [msg, data];
-    return this.#rtn.call(this, msg, data, code);
+    return this.#rtn.call(this, msg || 'success', data, code);
   }
 
   // 将当前实例字符串化
   stringify() {
     return JSON.stringify(this);
+  }
+
+}
+
+
+class Rtn{
+
+  ctx;
+
+  constructor(ctx){
+    this.ctx = ctx;
+  }
+
+  success(msg="success", data='', code=1){
+    jsonHeader(this.ctx, 200);
+  
+    if(!this.ctx.body){
+      this.ctx.body = (new RtnFomat).success(msg, data, code);
+    }
+
+    return this;
+  }
+
+  fail(msg="fail", data='', code=0) {
+    jsonHeader(this.ctx, 200);
+  
+    if(!this.ctx.body){
+      this.ctx.body =  (new RtnFomat).fail(msg, data, code);
+    }
+  }
+
+  html (html, status=200) {
+
+    // 如有输出则不再输出
+    if(!this.ctx.body){
+      // 返回状态码：默认200
+      this.ctx.response.status = status;
+  
+      // 警告：不设置'Content-Type'时，browser根据内容自动选择。这里强制为text/html型
+      // this.ctx.type = 'text/plain; charset=utf-8';
+      this.ctx.type = 'text/html; charset=utf-8';
+      this.ctx.body = html || 'LUCK';
+    }
+  
   }
 
 }
@@ -52,17 +96,26 @@ const jsonHeader = (ctx, httpCode=200)=>{
 
 module.exports.success=success;
 module.exports.fail=fail;
-module.exports.rtn = ctx=>{
+module.exports.Rtn = (ctx) => new Rtn(ctx);
+
+
+/* 
+module.exports.rtn = (ctx)=> {
+  // ctx:undefined,
+  // use(ctx){
+  //   this.ctx = ctx;
+  //   return this;
+  // },
 
   return {
+  // json 成功
+  success(msg="success", dt=[], httpCode=200){
+    jsonHeader(this.ctx, httpCode);
 
-    // json 成功
-    success(msg="success", dt=[], httpCode=200){
-      jsonHeader(ctx, httpCode);
-  
-      if(!ctx.body)
-        ctx.body = success.apply(null, arguments);
-    },
+    if(!this.ctx.body){
+      this.ctx.body = success.apply(null, arguments);
+    }
+  },
   
     // json 失败
     fail(msg="fail", data=[], httpCode=200){
@@ -87,7 +140,8 @@ module.exports.rtn = ctx=>{
       }
   
     }
-  
-  };
+  }
+} 
 
-}
+*/
+

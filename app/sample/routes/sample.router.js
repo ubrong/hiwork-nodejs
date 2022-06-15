@@ -93,8 +93,8 @@ router.post('/form/add', async (ctx, next) => {
 
 	// 返回结果
 	res.affected==1 
-		? ctx.RTN.success(res)
-		: ctx.RTN.fail('添加失败');
+		?  $rtn(ctx).success(res)
+		:  $rtn(ctx).fail('添加失败');
 	
 });
 
@@ -105,7 +105,7 @@ router.get('/form/list', async (ctx, next) => {
 	// 写入数据库
 	let r = await ctx.DB.select('select * from chy.t_cs_user order by id desc limit ?;', [10]);
 
-	ctx.RTN.success(r);
+	 $rtn(ctx).success(r);
 });
 
 
@@ -120,14 +120,14 @@ router.put('/form/update', async (ctx, next) => {
 	let res = await ctx.DB.update('chy.t_cs_user', pdata, ['id']);
 
 	if(res==false)
-		ctx.RTN.fail(res.getErr());
+		 $rtn(ctx).fail(res.getErr());
 	else{
 		if(res.affected<1)
-			ctx.RTN.fail('更新失败');
+			 $rtn(ctx).fail('更新失败');
 		else if(res.changed<1)
-			ctx.RTN.fail('没有数据被更新（可能是新旧数据一样）');
+			 $rtn(ctx).fail('没有数据被更新（可能是新旧数据一样）');
 		else
-			ctx.RTN.success();
+			 $rtn(ctx).success();
 	}
 });
 
@@ -139,8 +139,8 @@ router.delete('/form/del/(\\d{1,5})(\.html)?', async (ctx, next) => {
 	let res = ctx.DB.del('chy.t_cs_user', {id});
 
 	res==false
-		? ctx.RTN.fail(r.getErr())
-		: ctx.RTN.success();
+		?  $rtn(ctx).fail(r.getErr())
+		:  $rtn(ctx).success();
 });
 
 
@@ -161,6 +161,6 @@ router.get('/redis(\.html)?', async function(ctx, next){
   redis.quit();
 
   // 返回结果
-  ctx.RTN.success('取值[age]: ' + age);
+   $rtn(ctx).success('取值[age]: ' + age);
 });
 
