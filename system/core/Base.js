@@ -10,17 +10,22 @@
  */
 const {resolve} = require('path');
 
+// 第一部分：向 全局变量 中添加数据
+// 1.1 环境变量数据
+let envObj = require("dotenv").config();
+// app.context.ENV = envObj.parsed;
+// global.HW = envObj.parsed;
+global.$hw = envObj.parsed;
+
+// 1.1.2 设置时区
+process.env.TZ = global.$hw.TIME_ZONE;
+
+// 返回模块
+global.$rtn =  require(resolve('system/core/Rtn.js')).Rtn;
+
 module.exports = (app)=>{
-  // 第一部分：向 ctx原型 中添加数据
-
-  // 1.1 环境变量数据
-  let envObj = require("dotenv").config();
-  // app.context.ENV = envObj.parsed;
-  // global.HW = envObj.parsed;
-  global.$hw = envObj.parsed;
-
-  // 返回模块
-  global.$rtn =  require(resolve('system/core/Rtn.js')).Rtn;
+  
+  // 第二部分：向 ctx原型 中添加数据
 
   // 1.2 log库
   app.context.LOG = require(resolve('system/core/Logger.js'));
