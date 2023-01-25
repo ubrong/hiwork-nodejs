@@ -9,8 +9,13 @@ __*
 
 *.bak
 .*
+!.env
+*.tar
 
 !.example.env
 
+#app/myhapi/*
+
 logs/*
 !logs/.gitkeep
+.vercel
