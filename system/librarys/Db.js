@@ -68,6 +68,18 @@ const select = async (sql, params, fetchType=2)=>{
 }
 
 
+//设置页码的limit 20221004194439
+const setLimit = (pageNmb=1, pageSize=6)=>{
+  if(pageNmb<1) pageNmb=1;
+  if(pageSize<3) pageSize=6;
+
+  let start = (pageNmb-1)*pageSize;
+
+  return ` limit ${start},${pageSize}`;
+
+}
+
+
 /* 
   * 执行（增删改）
   * 
@@ -364,6 +376,7 @@ module.exports={
 	// query,
 	// transaction,
 	select,
+  setLimit,
 	execute,
 	update,
 	del,
