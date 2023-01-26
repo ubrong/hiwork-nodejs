@@ -1,9 +1,5 @@
 {
   "version": 2,
-  "/api/index.js": {
-    "memory": 128,
-    "maxDuration": 10
-  },
   "builds": [
     {
       "src": "index.js",
@@ -13,7 +9,7 @@
   "routes": [
     {
       "src": "/",
-      "dest": "/api" 
+      "dest": "/api/index.js" 
     }
   ]
 }
