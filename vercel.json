@@ -1,9 +1,19 @@
 {
   "version": 2,
+  "/api/index.js": {
+    "memory": 128,
+    "maxDuration": 10
+  },
   "builds": [
     {
       "src": "index.js",
       "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/",
+      "dest": "/api" 
     }
   ]
 }
