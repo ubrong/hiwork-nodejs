@@ -13,7 +13,7 @@
     "wss": "node ./websocket-server-demo.js",
     "http-dev": "nodemon --inspect ./index.js",
     "wss-dev": "nodemon --inspect ./websocket-server-demo.js",
-    "dev0": "nodemon --inspect ./index.js",
+    "dev": "nodemon --inspect ./index.js",
     "dev1": "nodemon --inspect ./-wss-dict.js"
   },
   "dependencies": {
