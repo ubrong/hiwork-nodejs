@@ -1,4 +1,5 @@
 {
+  "main": "api/index.js",
   "nodemonConfig": {
     "verbose": true,
     "ignore": [
@@ -9,11 +10,11 @@
     "delay": "1500"
   },
   "scripts": {
-    "build": "node ./index.js",
+    "dev": "nodemon --inspect ./api/index.js",
+    "build": "node ./api/index.js",
     "wss": "node ./websocket-server-demo.js",
     "http-dev": "nodemon --inspect ./index.js",
     "wss-dev": "nodemon --inspect ./websocket-server-demo.js",
-    "dev": "nodemon --inspect ./index.js",
     "dev1": "nodemon --inspect ./-wss-dict.js"
   },
   "dependencies": {
