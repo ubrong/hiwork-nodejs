@@ -148,17 +148,18 @@ router.delete('/form/del/(\\d{1,5})(\.html)?', async (ctx, next) => {
 // redis操作案例
 router.get('/redis(\.html)?', async function(ctx, next){
 
-  const redis = require( path.resolve('system/library/Redis.js') );
+  const {myRedis} = require( path.resolve('system/librarys/Redis.js') );
+  // console.log(myRedis);
 
   // 连接服务器
-  await redis.connect();
+  await myRedis.connect();
 
   // 取值
-  let age = await redis.get('age');
-  await redis.set('age', ++age);//增加1
+  let age = await myRedis.get('age');
+  await myRedis.set('age', ++age);//增加1
 
   // 关闭连接
-  redis.quit();
+  myRedis.quit();
 
   // 返回结果
    $rtn(ctx).success('取值[age]: ' + age);

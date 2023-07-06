@@ -150,5 +150,5 @@ class Redis{
 }
  
 // module.exports = new Redis();
-module.exports.Redis = Redis;
+module.exports.myRedis = new Redis;
 
